@@ -11,10 +11,10 @@ let package = Package(
         .watchOS(.v9)
     ],
     products: [
-        .library(name: "BackpackColors", targets: ["Colors"]),
-        .library(name: "BackpackExtensions", targets: ["Extensions"]),
-        .library(name: "BackpackViews", targets: ["Views"]),
-        .library(name: "BackpackTimeframe", targets: ["Timeframe"]),
+        .library(name: "Colors", targets: ["Colors"]),
+        .library(name: "Extensions", targets: ["Extensions"]),
+        .library(name: "Views", targets: ["Views"]),
+        .library(name: "Timeframe", targets: ["Timeframe"]),
     ],
     dependencies: [
     ],
