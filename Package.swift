@@ -18,8 +18,8 @@ let package = Package(
     dependencies: [
     ],
     targets: [
-        .target(name: "Colors", dependencies: []),
         .target(name: "Extensions", dependencies: []),
-        .target(name: "Views", dependencies: []),
+        .target(name: "Views", dependencies: ["Extensions"]),
+        .target(name: "Colors", dependencies: [.byName(name: "Extensions"), .byName(name: "Views")])
     ]
 )

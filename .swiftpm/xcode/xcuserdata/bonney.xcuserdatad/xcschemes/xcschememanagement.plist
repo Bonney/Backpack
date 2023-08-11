@@ -42,6 +42,11 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>Backpack_Colors</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>Colors</key>
 		<dict>
 			<key>primary</key>
