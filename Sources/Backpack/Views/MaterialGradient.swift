@@ -1,5 +1,6 @@
 import SwiftUI
 
+#if !os(watchOS)
 public struct MaterialGradient: View {
     let material: Material
     let allowsHitTesting: Bool
@@ -58,4 +59,4 @@ struct MaterialGradient_Previews: PreviewProvider {
             }
     }
 }
-
+#endif
