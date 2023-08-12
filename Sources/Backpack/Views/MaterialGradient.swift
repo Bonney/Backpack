@@ -1,5 +1,4 @@
 import SwiftUI
-import Extensions
 
 public struct MaterialGradient: View {
     let material: Material
