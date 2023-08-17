@@ -66,3 +66,30 @@ public enum Timeframe {
         }
     }
 }
+
+extension Timeframe: Hashable { }
+
+extension Timeframe: Identifiable {
+    public var id: String {
+        switch self {
+            case .allTime:
+                return "allTime"
+            case .today:
+                return "today"
+            case .weekToDate:
+                return "weekToDate"
+            case .monthToDate:
+                return "monthToDate"
+            case .yearToDate:
+                return "yearToDate"
+            case .pastDays(_):
+                return "pastDays"
+            case .pastWeeks(_):
+                return "pastWeeks"
+            case .pastMonths(_):
+                return "pastMonths"
+            case .range(_, _):
+                return "range"
+        }
+    }
+}
