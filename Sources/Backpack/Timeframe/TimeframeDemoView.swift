@@ -19,7 +19,7 @@ struct TimeframeDemoView: View {
                         .tag(timeframe)
                 }
             }
-            .pickerStyle(.segmented)
+//            .pickerStyle(.segmented)
 
             Text("Columns to use: ") + Text(chartTimeframe.chartXAxisSubdivisions, format: .number)
 

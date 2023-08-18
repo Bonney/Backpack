@@ -1,10 +1,9 @@
 import os
-import Foundation
-import UserNotifications
-import CoreLocation
 import UIKit
-import Backpack
 import Combine
+import Foundation
+import CoreLocation
+import UserNotifications
 
 /// A class that manages local notifications for the app.
 @MainActor public final class LocalNotifications: ObservableObject {
