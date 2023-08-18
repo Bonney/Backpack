@@ -38,9 +38,11 @@ import UserNotifications
     #endif
 
     /// The number currently set as the badge of the app icon on the Home Screen.
+    #if os(iOS)
     public var applicationIconBadgeNumber: Int {
         UIApplication.shared.applicationIconBadgeNumber
     }
+    #endif
 
     public func getPendingNotificationRequests() async -> [UNNotificationRequest] {
         LocalNotifications.logger.info("Getting pending notification requests.")
