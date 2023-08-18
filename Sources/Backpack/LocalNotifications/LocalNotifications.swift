@@ -28,12 +28,14 @@ import UserNotifications
     /// Open the Settings App on user's device.
     ///
     /// If user has previously denied notification authorization, the OS prompt will not appear again. The user will need to manually turn notifications in Settings.
+    #if os(iOS)
     public func openAppSettings() throws {
         guard let url = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(url) else {
             throw URLError(.badURL)
         }
         UIApplication.shared.open(url)
     }
+    #endif
 
     /// The number currently set as the badge of the app icon on the Home Screen.
     public var applicationIconBadgeNumber: Int {
