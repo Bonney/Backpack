@@ -12,7 +12,7 @@ import Combine
 
     // MARK: - Lifecycle
 
-    static let shared = LocalNotifications()
+    public static let shared = LocalNotifications()
 
     /// Do not initialize the class directly; instead, access the static shared instance.
     private init() {
