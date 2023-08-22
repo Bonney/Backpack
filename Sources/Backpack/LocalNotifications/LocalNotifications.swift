@@ -1,9 +1,12 @@
 import os
-import UIKit
 import Combine
 import Foundation
 import CoreLocation
 import UserNotifications
+
+#if canImport(UIKit)
+import UIKit
+#endif
 
 /// A class that manages local notifications for the app.
 @MainActor public final class LocalNotifications: ObservableObject {
@@ -24,35 +27,6 @@ import UserNotifications
 
     /// The shared instance of `UNUserNotificationCenter` that is used to schedule notifications.
     private let instance = UNUserNotificationCenter.current()
-
-    /// Open the Settings App on user's device.
-    ///
-    /// If user has previously denied notification authorization, the OS prompt will not appear again. The user will need to manually turn notifications in Settings.
-    #if os(iOS)
-    public func openAppSettings() throws {
-        guard let url = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(url) else {
-            throw URLError(.badURL)
-        }
-        UIApplication.shared.open(url)
-    }
-    #endif
-
-    /// The number currently set as the badge of the app icon on the Home Screen.
-    #if os(iOS)
-    public var applicationIconBadgeNumber: Int {
-        UIApplication.shared.applicationIconBadgeNumber
-    }
-    #endif
-
-    public func getPendingNotificationRequests() async -> [UNNotificationRequest] {
-        LocalNotifications.logger.info("Getting pending notification requests.")
-        return await withCheckedContinuation { continuation in
-            instance.getPendingNotificationRequests { notifications in
-                LocalNotifications.logger.info("Found \(notifications.count) pending notification requests.")
-                continuation.resume(returning: notifications)
-            }
-        }
-    }
 }
 
 // MARK: - Authorization
