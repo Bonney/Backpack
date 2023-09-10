@@ -130,7 +130,7 @@ private struct LabeledColorPickerDetail: View {
                 labeledColor.label.labelStyle(.titleOnly)
                     .font(.subheadline)
                     .fontWeight(.medium)
-                    .foregroundColor(labeledColor.contrastingForegroundColor)
+                    .foregroundColor(labeledColor.color.contrastingForegroundColor())
             }
     }
 

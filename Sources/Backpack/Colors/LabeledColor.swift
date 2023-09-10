@@ -17,9 +17,6 @@ public struct LabeledColor: Identifiable, Hashable {
     public let id: UUID
     public let name: String
     public let color: Color
-    public var contrastingForegroundColor: Color {
-        self.color.contrastingForegroundColor
-    }
 
     /// A SwiftUI Label, where the Title is this LabeledColor's Name,
     /// and the Icon is a circle in this LabeledColor's Color.

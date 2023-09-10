@@ -11,11 +11,11 @@ public typealias UXColor = UIColor
 public extension UXColor {
     /// Determines if the color is bright or dark based on its overall luminance.
     /// - Returns: `true` if the color is bright, `false` if it is dark.
-    func isBright() -> Bool {
+    func isBright(luminanceTolerance: CGFloat = 0.555) -> Bool {
         var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
         self.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
         let luminance = (0.2126 * red) + (0.7152 * green) + (0.0722 * blue)
-        return luminance > 0.555 // adjusts the "tolerance" of what is considered bright
+        return luminance > luminanceTolerance // adjusts the "tolerance" of what is considered bright
     }
 }
 
@@ -51,12 +51,17 @@ public extension UXColor {
 //}
 
 public extension SwiftUI.Color {
-    func isBright() -> Bool {
-        return UXColor(self).isBright()
+    func isBright(luminanceTolerance: CGFloat = 0.55) -> Bool {
+        return UXColor(self).isBright(luminanceTolerance: luminanceTolerance)
     }
 
+    // Return a contrasting color with default tolerance
     var contrastingForegroundColor: Color {
-        self.isBright() ? Color.black : Color.white
+        self.contrastingForegroundColor()
+    }
+
+    func contrastingForegroundColor(luminanceTolerance: CGFloat = 0.55) -> Color {
+        self.isBright(luminanceTolerance: luminanceTolerance) ? Color.black : Color.white
     }
 
     var hue: CGFloat {
@@ -82,7 +87,7 @@ struct ColorView: View {
             Text(color.isBright() ? "Bright" : "Dark")
                 .font(.largeTitle)
                 .fontWeight(.semibold)
-                .foregroundColor(color.contrastingForegroundColor)
+                .foregroundColor(color.contrastingForegroundColor())
         }
     }
 }
