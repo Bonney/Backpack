@@ -40,7 +40,7 @@ public enum Timeframe {
                 return (startOfWeek, .now)
 
             case .monthToDate:
-                let components = Calendar.current.dateComponents([.month], from: Date.now)
+                let components = Calendar.current.dateComponents([.month, .year], from: Date.now)
                 let startOfMonth = Calendar.current.date(from: components) ?? Date.now
                 return (startOfMonth, .now)
 
