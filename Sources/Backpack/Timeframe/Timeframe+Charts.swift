@@ -4,11 +4,11 @@ import Foundation
 
 extension Timeframe {
 
-    static var defaultChartTimeframes: [Timeframe] {
+    public static var defaultChartTimeframes: [Timeframe] {
         [.today, .weekToDate, .monthToDate, .yearToDate]
     }
 
-    var displayName: String {
+    public var displayName: String {
         switch self {
             case .allTime:
                 return "All Time"
@@ -32,7 +32,7 @@ extension Timeframe {
     }
 
     /// The number of x-axis columns to use for a given Timeframe.
-    var chartXAxisSubdivisions: Int {
+    public var chartXAxisSubdivisions: Int {
         switch self {
             case .allTime:
                 return 1
