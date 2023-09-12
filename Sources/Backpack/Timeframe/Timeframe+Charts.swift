@@ -31,6 +31,31 @@ extension Timeframe {
         }
     }
 
+    /// What date component is best used to subdivide the
+    /// x-axis for a given Timeframe.
+    public var chartXAxisStrideCalendarComponent: Calendar.Component {
+        switch self {
+            case .allTime:
+                return .era
+            case .today:
+                return .hour // Show a bar for each hour of a 24 hour day
+            case .weekToDate:
+                return .day // Show a bar for each day for far this week
+            case .monthToDate:
+                return .day // Show a bar for each day so far this month
+            case .yearToDate:
+                return .month // Show a bar for each of the 12 months
+            case .pastDays(_):
+                return .day
+            case .pastWeeks(_):
+                return .weekOfYear
+            case .pastMonths(_):
+                return .month
+            case .range(_, _):
+                return .hour
+        }
+    }
+
     /// The number of x-axis columns to use for a given Timeframe.
     public var chartXAxisSubdivisions: Int {
         switch self {
