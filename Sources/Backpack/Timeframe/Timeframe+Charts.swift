@@ -5,30 +5,7 @@ import Foundation
 extension Timeframe {
 
     public static var defaultChartTimeframes: [Timeframe] {
-        [.today, .weekToDate, .monthToDate, .yearToDate]
-    }
-
-    public var displayName: String {
-        switch self {
-            case .allTime:
-                return "All Time"
-            case .today:
-                return "Day"
-            case .weekToDate:
-                return "Week"
-            case .monthToDate:
-                return "Month"
-            case .yearToDate:
-                return "Year"
-            case .pastDays(let days):
-                return "\(days) Days"
-            case .pastWeeks(let weeks):
-                return "\(weeks) Weeks"
-            case .pastMonths(let months):
-                return "\(months) Months"
-            case .range(_, _):
-                return "Custom Range"
-        }
+        [.today, .thisWeek, .thisMonth, .thisYear]
     }
 
     /// What date component is best used to subdivide the
@@ -39,20 +16,14 @@ extension Timeframe {
                 return .era
             case .today:
                 return .hour // Show a bar for each hour of a 24 hour day
-            case .weekToDate:
+            case .thisWeek:
                 return .day // Show a bar for each day for far this week
-            case .monthToDate:
+            case .thisMonth:
                 return .day // Show a bar for each day so far this month
-            case .yearToDate:
+            case .thisYear:
                 return .month // Show a bar for each of the 12 months
-            case .pastDays(_):
+            case .from(_, _):
                 return .day
-            case .pastWeeks(_):
-                return .weekOfYear
-            case .pastMonths(_):
-                return .month
-            case .range(_, _):
-                return .hour
         }
     }
 
@@ -63,19 +34,13 @@ extension Timeframe {
                 return 1
             case .today:
                 return 24 // 24 hours in a day.
-            case .weekToDate:
+            case .thisWeek:
                 return 7 // 7 days in a week
-            case .monthToDate:
+            case .thisMonth:
                 return Date.now.daysInMonth // 28/29, 30, or 31 days per month
-            case .yearToDate:
+            case .thisYear:
                 return 12 // 12 months in a year
-            case .pastDays(let days):
-                return days
-            case .pastWeeks(let weeks):
-                return weeks
-            case .pastMonths(let months):
-                return months
-            case .range(let startDate, let endDate):
+            case .from(let startDate, let endDate):
                 // Intelligently determine what scale we are using.
                 // Find the interval between the dates.
                 let interval = startDate.distance(to: endDate)

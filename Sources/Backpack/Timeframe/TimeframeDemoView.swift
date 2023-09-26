@@ -15,7 +15,7 @@ struct TimeframeDemoView: View {
         VStack {
             Picker("Timeframe", selection: $chartTimeframe) {
                 ForEach(Timeframe.defaultChartTimeframes) { timeframe in
-                    Text(timeframe.displayName)
+                    Text(timeframe.description)
                         .tag(timeframe)
                 }
             }
@@ -32,7 +32,7 @@ struct TimeframeDemoView: View {
                 }
             }
             .chartXScale(range: .plotDimension(startPadding: 0, endPadding: 0))
-            .chartXAxisLabel(chartTimeframe.displayName, position: .top, alignment: .leading, spacing: nil)
+            .chartXAxisLabel(chartTimeframe.description, position: .top, alignment: .leading, spacing: nil)
             .chartXScale(domain: 0...chartTimeframe.chartXAxisSubdivisions, range: .plotDimension, type: nil)
         }
         .padding()

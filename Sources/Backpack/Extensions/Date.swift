@@ -379,14 +379,37 @@ public extension Date {
     var startOfWeek: Date? {
         let gregorian = Calendar(identifier: .gregorian)
         guard let sunday = gregorian.date(from: gregorian.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)) else { return nil }
-        return gregorian.date(byAdding: .day, value: 1, to: sunday)
+        return gregorian.date(byAdding: .day, value: 1, to: sunday)?.startOfDay
     }
 
     var endOfWeek: Date? {
         let gregorian = Calendar(identifier: .gregorian)
         guard let sunday = gregorian.date(from: gregorian.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)) else { return nil }
-        return gregorian.date(byAdding: .day, value: 7, to: sunday)
+        return gregorian.date(byAdding: .day, value: 7, to: sunday)?.endOfDay
     }
+
+    var startOfMonth: Date? {
+        let components = Calendar.current.dateComponents([.year, .month], from: Date.today)
+        return Calendar.current.date(from: components)?.startOfDay
+    }
+
+    var endOfMonth: Date? {
+        let components = Calendar.current.dateComponents([.year, .month], from: Date.today)
+        guard let startOfMonth = Calendar.current.date(from: components) else { return nil }
+        return Calendar.current.date(byAdding: DateComponents(month: 1, day: -1), to: startOfMonth)?.endOfDay
+    }
+
+    var startOfYear: Date? {
+        let components = Calendar.current.dateComponents([.year], from: Date.today)
+        return Calendar.current.date(from: components)?.startOfDay
+    }
+
+    var endOfYear: Date? {
+        let components = Calendar.current.dateComponents([.year], from: Date.today)
+        guard let startOfYear = Calendar.current.date(from: components) else { return nil }
+        return Calendar.current.date(byAdding: DateComponents(year: 1, day: -1), to: startOfYear)?.endOfDay
+    }
+
 
     var startOfLastWeek: Date? {
         Date.offset(from: Date(), by: -7).startOfWeek

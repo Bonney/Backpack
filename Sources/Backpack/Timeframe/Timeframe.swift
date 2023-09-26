@@ -1,95 +1,86 @@
+import os
 import Foundation
 
 /// Represents a period of time for running HealthKit queries.
 public enum Timeframe {
+    private static let logger = Logger(subsystem: "Backpack", category: "Timeframe")
+
     /// Used when we want access to all data ever saved.
     case allTime
 
     /// The current day, from 12:00 AM to now.
     case today
 
-    /// From the beginning of this week to date.
-    case weekToDate
+    /// This calendar week.
+    case thisWeek
 
-    /// From the first of this month to date.
-    case monthToDate
+    /// This calendar month.
+    case thisMonth
 
-    /// From Jan. 1 of this year to date.
-    case yearToDate
-
-    /// Query for the last X days, weeks, or months.
-    case pastDays(_ count: Int)
-    case pastWeeks(_ count: Int)
-    case pastMonths(_ count: Int)
+    /// This calendar year.
+    case thisYear
 
     /// Query for a specific date range.
-    case range(startDate: Date, endDate: Date)
+    case from(start: Date, end: Date)
+}
 
-    /// Returns the start and end dates for the query.
-    public var dates: (start: Date?, end: Date?) {
+extension Timeframe {
+    public var dateRange: ClosedRange<Date> {
         switch self {
             case .allTime:
-                return (nil, nil)
+                return Date(timeIntervalSince1970: 0) ... Date.now.endOfDay
 
             case .today:
-                return (Calendar.current.startOfDay(for: .now), .now)
+                return Date.now.startOfDay ... Date.now.endOfDay
 
-            case .weekToDate:
-                let components = Calendar.current.dateComponents([.weekOfYear], from: Date.now)
-                let startOfWeek = Calendar.current.date(from: components) ?? Date.now
-                return (startOfWeek, .now)
+            case .thisWeek:
+                guard let start = Date.now.startOfWeek, let end = Date.now.endOfWeek else {
+                    Timeframe.logger.error("Couldn't find start/end dates for .thisWeek")
+                    fatalError()
+                }
+                return start ... end
 
-            case .monthToDate:
-                let components = Calendar.current.dateComponents([.month, .year], from: Date.now)
-                let startOfMonth = Calendar.current.date(from: components) ?? Date.now
-                return (startOfMonth, .now)
+            case .thisMonth:
+                guard let start = Date.now.startOfMonth, let end = Date.now.endOfMonth else {
+                    Timeframe.logger.error("Couldn't find start/end dates for .thisMonth")
+                    fatalError()
+                }
+                return start ... end
 
-            case .yearToDate:
-                let components = Calendar.current.dateComponents([.year], from: Date.now)
-                let startOfYear = Calendar.current.date(from: components) ?? Date.now
-                return (startOfYear, .now)
+            case .thisYear:
+                guard let start = Date.now.startOfMonth, let end = Date.now.endOfMonth else {
+                    Timeframe.logger.error("Couldn't find start/end dates for .thisMonth")
+                    fatalError()
+                }
+                return start ... end
 
-            case .pastDays(let count):
-                let start = Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .day, value: (-1 * count) + 1, to: Date.now) ?? .now)
-                return (start, .now)
-
-            case .pastWeeks(let count):
-                let start = Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .day, value: -7 * count, to: Date.now) ?? .now)
-                return (start, .now)
-
-            case .pastMonths(let count):
-                let start = Calendar.current.startOfDay(for: Calendar.current.date(byAdding: .month, value: -1 * count, to: Date.now) ?? .now)
-                return (start, .now)
-
-            case .range(startDate: let startDate, endDate: let endDate):
-                return (startDate, endDate)
+            case .from(let start, let end):
+                return start ... end
         }
     }
 }
 
 extension Timeframe: Hashable { }
 
-extension Timeframe: Identifiable {
+extension Timeframe: Identifiable, CustomStringConvertible {
     public var id: String {
+        self.description
+    }
+
+    public var description: String {
         switch self {
             case .allTime:
-                return "allTime"
+                return "All Time"
             case .today:
-                return "today"
-            case .weekToDate:
-                return "weekToDate"
-            case .monthToDate:
-                return "monthToDate"
-            case .yearToDate:
-                return "yearToDate"
-            case .pastDays(_):
-                return "pastDays"
-            case .pastWeeks(_):
-                return "pastWeeks"
-            case .pastMonths(_):
-                return "pastMonths"
-            case .range(_, _):
-                return "range"
+                return "Today"
+            case .thisWeek:
+                return "This Week"
+            case .thisMonth:
+                return "This Month"
+            case .thisYear:
+                return "This Year"
+            case .from(let start, let end):
+                return "\(start.formatted(date: .numeric, time: .omitted)) – \(end.formatted(date: .numeric, time: .omitted))"
         }
     }
 }
