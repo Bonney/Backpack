@@ -26,6 +26,7 @@ public struct AquaButtonStyle: ButtonStyle {
             .font(.system(size: controlSize.minimumButtonHeight * 0.4))
             .bold()
             .foregroundStyle(.ultraThickMaterial.shadow(.drop(radius: 2)))
+            .environment(\.colorScheme, .light) // Ensures we always use the light/bright Material
     }
 
     func makeBackground(configuration: Self.Configuration) -> some View {
@@ -65,22 +66,12 @@ public extension ButtonStyle where Self == AquaButtonStyle {
 
 #Preview {
     VStack {
-//        Button("Set up your iPhone") { }
-//            .tint(.green)
-//            .controlSize(.regular)
-
-        Button { } label: {
-            Text("Log a Drink").frame(maxWidth: .infinity, alignment: .center)
+        ForEach(LabeledColor.systemColors) { systemColor in
+            Button { } label: {
+                Text(systemColor.name).frame(maxWidth: .infinity)
+            }
+                .tint(systemColor.color)
         }
-        .tint(.blue)
-        .controlSize(.large)
-
-//        HStack {
-//            Button("Cancel", action: {}).tint(Color(white: 0.9))
-//            Button("Save", action: {}).tint(.blue)
-//        }
-//        .controlSize(.small)
-
     }
     .buttonStyle(.aqua)
     .padding()
