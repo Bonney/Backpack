@@ -54,9 +54,10 @@ public extension LabeledColor {
     static let systemRed = LabeledColor("Red", color: Color.red)
     static let systemOrange = LabeledColor("Orange", color: Color.orange)
     static let systemYellow = LabeledColor("Yellow", color: Color.yellow)
+    static let systemGray = LabeledColor("Gray", color: Color.gray)
 
     static var systemColors: [LabeledColor] {
-        [LabeledColor.systemBlue, .systemGreen, .systemTeal, .systemCyan, .systemMint, .systemIndigo, .systemPurple, .systemOrange, .systemYellow]
+        [LabeledColor.systemBlue, .systemGreen, .systemTeal, .systemCyan, .systemMint, .systemIndigo, .systemPurple, .systemOrange, .systemYellow, .systemGray]
     }
 }
 
