@@ -14,6 +14,7 @@ public struct AquaButtonStyle: ButtonStyle {
             .padding(.horizontal, controlSize.minimumButtonHeight * 0.5)
             .frame(idealHeight: controlSize.minimumButtonHeight)
             .background(makeBackground(configuration: configuration))
+            .containerShape(.capsule)
             // Animations
             .scaleEffect(configuration.isPressed ? 0.96 : 1.00)
             .opacity(configuration.isPressed ? 0.6 : 1.00)
@@ -49,6 +50,7 @@ public struct AquaButtonStyle: ButtonStyle {
                 .blur(radius: 6.0, opaque: false)
                 .frame(maxHeight: controlSize.minimumButtonHeight * 0.2)
         }
+        .clipShape(ContainerRelativeShape())
         .overlay {
             // Button Outline
             ContainerRelativeShape()
@@ -72,7 +74,6 @@ public extension ButtonStyle where Self == AquaButtonStyle {
         }
         .tint(.blue)
         .controlSize(.large)
-        .containerShape(.rect(cornerRadius: 22))
 
 //        HStack {
 //            Button("Cancel", action: {}).tint(Color(white: 0.9))
@@ -83,6 +84,5 @@ public extension ButtonStyle where Self == AquaButtonStyle {
     }
     .buttonStyle(.aqua)
     .padding()
-    .containerShape(.capsule)
 }
 
