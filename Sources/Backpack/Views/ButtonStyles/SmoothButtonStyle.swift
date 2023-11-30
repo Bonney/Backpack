@@ -38,20 +38,9 @@ public extension ButtonStyle where Self == SmoothButtonStyle {
 }
 
 #Preview {
-    ScrollView {
-        HStack {
-            Button(role: .cancel, action: { }) {
-                Text("Cancel")
-            }
-            .buttonStyle(.bordered)
-            .tint(.red)
-
-            Button("Save Drink", systemImage: "checkmark", action: { })
-                .buttonStyle(.smooth)
-                .tint(.teal)
-        }
+    List {
         ForEach([ControlSize.mini, .small, .regular, .large, .extraLarge], id: \.self) { controlSize in
-            GroupBox(String(describing: controlSize)) {
+            Section(String(describing: controlSize)) {
                 VStack {
                     HStack {
                         Button("Bordered", action: {})
@@ -91,5 +80,4 @@ public extension ButtonStyle where Self == SmoothButtonStyle {
             .controlSize(controlSize)
         }
     }
-    .contentMargins(8, for: .scrollContent)
 }
