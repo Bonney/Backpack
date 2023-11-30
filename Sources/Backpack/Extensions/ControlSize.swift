@@ -36,11 +36,11 @@ public extension SwiftUI.ControlSize {
 
     var font: Font {
         switch self {
-            case .mini:         Font.subheadline
-            case .small:        Font.subheadline
-            case .regular:      Font.body
-            case .large:        Font.body
-            case .extraLarge:   Font.body
+            case .mini:         Font.subheadline.weight(.medium)
+            case .small:        Font.subheadline.weight(.medium)
+            case .regular:      Font.body.weight(.semibold)
+            case .large:        Font.body.weight(.semibold)
+            case .extraLarge:   Font.body.weight(.semibold)
             @unknown default:   Font.largeTitle
         }
     }
