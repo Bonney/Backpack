@@ -1,0 +1,4 @@
+module Backpack {
+    header "/Users/bonney/Developer/Swift/_PACKAGES/Backpack/.build/arm64-apple-macosx/debug/Backpack.build/Backpack-Swift.h"
+    requires objc
+}
