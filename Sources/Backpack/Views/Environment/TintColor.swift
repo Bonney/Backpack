@@ -16,9 +16,13 @@ extension EnvironmentValues {
 extension View {
     /// Set both SwiftUI's `.tint` modifier (which has no good environment values),
     /// as well as my custom `tintColor` environment value.
-    public func tintColor(_ color: Color) -> some View {
-        self
-            .environment(\.tintColor, color)
-            .tint(color)
+    @ViewBuilder
+    public func tintColor(_ color: Color?) -> some View {
+        if let color {
+            self.tint(color)
+                .environment(\.tintColor, color)
+        } else {
+            self
+        }
     }
 }

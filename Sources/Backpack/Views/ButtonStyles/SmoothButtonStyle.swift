@@ -20,14 +20,19 @@ public struct SmoothButtonStyle: ButtonStyle {
     @ViewBuilder var backgroundStyle: some View {
         let shape = AnyShape(controlSize.controlShape)
 
-        ZStack {
-            shape.foregroundStyle(.tint)
-            shape.foregroundStyle(
-                LinearGradient(colors: [Color.white, Color.clear, Color.black], startPoint: .top, endPoint: .bottom)
-            )
-            .blendMode(.softLight)
-            .opacity(colorScheme == .light ? 0.8 : 1.0)
-        }
+        shape.foregroundStyle(.tint)
+            .overlay {
+                shape.foregroundStyle(
+                    LinearGradient(stops: [
+                        .init(color: Color.white.opacity(0.4), location: 0.0),
+                        .init(color: Color.white.opacity(0.0), location: 0.5),
+                        .init(color: Color.black.opacity(0.0), location: 0.5),
+                        .init(color: Color.black.opacity(0.4), location: 1.0),
+                    ], startPoint: .top, endPoint: .bottom)
+
+                )
+                .blendMode(.softLight)
+            }
     }
 }
 
