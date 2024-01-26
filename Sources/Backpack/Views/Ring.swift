@@ -104,7 +104,7 @@ struct RingPreview<Content: View>: View {
 
                 Slider(value: $progress, in: 0...5)
 
-                ControlGroup {
+                HStack {
                     Button("Reset") {
                         setValue(0.0)
                     }
