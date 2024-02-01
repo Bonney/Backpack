@@ -54,10 +54,6 @@ public struct DragToDismissFullScreenMaterialCard<Content: View>: View {
 
     public var body: some View {
         ZStack {
-            ContainerRelativeShape()
-                .aspectRatio(1, contentMode: .fit)
-                .foregroundStyle(.background)
-
             content
         }
         .background {
