@@ -59,7 +59,7 @@ public struct DragToDismissFullScreenMaterialCard<Content: View>: View {
         .background {
             // Background Shape/Material
             backgroundShape
-                .fill(.background)
+                .foregroundStyle(.background.shadow(.drop(color: Color.black.opacity(0.125), radius: 10, x: 0, y: 0)))
                 .ignoresSafeArea()
         }
         .scrollContentBackground(.hidden)
