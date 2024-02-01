@@ -43,6 +43,38 @@ struct DragDownToDismissViewModifier: ViewModifier {
 
 // MARK: - Examples
 
+public struct DragToDismissFullScreenMaterialCard<Content: View>: View {
+    let content: Content
+
+    public init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
+    private let backgroundShape = RoundedRectangle(cornerRadius: 50, style: .continuous)
+
+    public var body: some View {
+        ZStack {
+            ContainerRelativeShape()
+                .aspectRatio(1, contentMode: .fit)
+                .foregroundStyle(.background)
+
+            content
+        }
+        .background {
+            // Background Shape/Material
+            backgroundShape
+                .fill(.background)
+                .ignoresSafeArea()
+        }
+        .scrollContentBackground(.hidden)
+        .presentationBackground(Color.clear)
+        .presentationDragIndicator(.visible)
+        .backgroundStyle(.regularMaterial)
+        .containerShape(backgroundShape)
+        .dragToDismiss(dismissHeight: 200)
+    }
+}
+
 public struct CoverView: View {
     private let backgroundShape = RoundedRectangle(cornerRadius: 50, style: .continuous)
 
