@@ -5,7 +5,10 @@ public struct SmoothButtonStyle: ButtonStyle {
     @Environment(\.controlSize) private var controlSize
     @Environment(\.tintColor) private var tintColor
 
-    public init() {
+    private var maxWidth: CGFloat? = nil
+
+    public init(maxWidth: CGFloat? = nil) {
+        self.maxWidth = maxWidth
     }
 
     public func makeBody(configuration: Configuration) -> some View {
@@ -13,6 +16,7 @@ public struct SmoothButtonStyle: ButtonStyle {
             .foregroundStyle(Color.white)
             .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 0)
             .font(controlSize.font)
+            .frame(maxWidth: maxWidth, alignment: .center)
             .padding(.horizontal, controlSize.horizontalLabelPadding)
             .frame(minHeight: controlSize.minimumButtonHeight)
             .background(backgroundStyle)
@@ -60,7 +64,11 @@ public struct SmoothButtonStyle: ButtonStyle {
 
 public extension ButtonStyle where Self == SmoothButtonStyle {
     static var smooth: Self {
-        SmoothButtonStyle()
+        SmoothButtonStyle(maxWidth: nil)
+    }
+
+    static func smooth(maxWidth: CGFloat? = nil) -> Self {
+        SmoothButtonStyle(maxWidth: maxWidth)
     }
 }
 
