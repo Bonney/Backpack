@@ -15,6 +15,9 @@ public struct SmoothButtonStyle: ButtonStyle {
             .padding(.horizontal, controlSize.horizontalLabelPadding)
             .frame(minHeight: controlSize.minimumButtonHeight)
             .background(backgroundStyle)
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.00)
+            .opacity(configuration.isPressed ? 0.6 : 1.0)
+            .animation(.interactiveSpring, value: configuration.isPressed)
     }
 
     @ViewBuilder var backgroundStyle: some View {
