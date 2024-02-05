@@ -19,46 +19,21 @@ public struct SmoothButtonStyle: ButtonStyle {
             .frame(maxWidth: maxWidth, alignment: .center)
             .padding(.horizontal, controlSize.horizontalLabelPadding)
             .frame(minHeight: controlSize.minimumButtonHeight)
-            .background(backgroundStyle)
-            .scaleEffect(configuration.isPressed ? 0.95 : 1.00)
             .opacity(configuration.isPressed ? 0.6 : 1.0)
+            .background(makeBackground(configuration: configuration))
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.00)
             .animation(.interactiveSpring, value: configuration.isPressed)
     }
 
-    @ViewBuilder var backgroundStyle: some View {
-        let shape = AnyShape(controlSize.controlShape)
-        let highlight = LinearGradient(
-            colors: [Color.white.opacity(0.4), Color.clear],
-            startPoint: .top, endPoint: .bottom
-        )
-
-        let lowlight = LinearGradient(
-            colors: [Color.clear, Color.white.opacity(0.2)],
-            startPoint: .center, endPoint: .bottom
-        )
-
-        shape
+    @ViewBuilder
+    private func makeBackground(configuration: Configuration) -> some View {
+        AnyShape(controlSize.controlShape)
             .fill(
                 tintColor.gradient
                     .shadow(.inner(color: Color.white.opacity(0.5), radius: 1.5, y: 1))
                     .shadow(.inner(color: Color.white.opacity(0.2), radius: 3.0, y: 0))
             )
-//            .stroke(highlight, lineWidth: 1.0)
-//            .stroke(lowlight, lineWidth: 1.0)
-//
-//        shape.foregroundStyle(.tint)
-//            .overlay {
-//                shape.foregroundStyle(
-//                    LinearGradient(stops: [
-//                        .init(color: Color.white.opacity(0.4), location: 0.0),
-//                        .init(color: Color.white.opacity(0.0), location: 0.5),
-//                        .init(color: Color.black.opacity(0.0), location: 0.5),
-//                        .init(color: Color.black.opacity(0.4), location: 1.0),
-//                    ], startPoint: .top, endPoint: .bottom)
-//
-//                )
-//                .blendMode(.softLight)
-//            }
+            .grayscale(configuration.isPressed ? 0.2 : 0.0)
     }
 }
 
