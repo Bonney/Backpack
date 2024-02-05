@@ -27,9 +27,9 @@ public extension SwiftUI.ControlSize {
         switch self {
             case .mini:         Capsule()
             case .small:        Capsule()
-            case .regular:      RoundedRectangle(cornerRadius: 8)
-            case .large:        RoundedRectangle(cornerRadius: 12)
-            case .extraLarge:   Capsule()
+            case .regular:      RoundedRectangle(cornerRadius: 12)
+            case .large:        RoundedRectangle(cornerRadius: 18)
+            case .extraLarge:   RoundedRectangle(cornerRadius: 24)
             @unknown default:   Rectangle()
         }
     }
