@@ -5,7 +5,7 @@ public extension SwiftUI.ControlSize {
         switch self {
             case .mini:         26.0
             case .small:        30.0
-            case .regular:      36.0
+            case .regular:      40.0
             case .large:        52.0
             case .extraLarge:   56.0
             @unknown default:   200.0
