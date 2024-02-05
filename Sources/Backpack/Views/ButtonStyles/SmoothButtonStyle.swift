@@ -3,6 +3,7 @@ import SwiftUI
 public struct SmoothButtonStyle: ButtonStyle {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.controlSize) private var controlSize
+    @Environment(\.tintColor) private var tintColor
 
     public init() {
     }
@@ -10,7 +11,7 @@ public struct SmoothButtonStyle: ButtonStyle {
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .foregroundStyle(Color.white)
-            .shadow(color: Color.black.opacity(0.15), radius: 2, x: 0, y: 0)
+            .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 0)
             .font(controlSize.font)
             .padding(.horizontal, controlSize.horizontalLabelPadding)
             .frame(minHeight: controlSize.minimumButtonHeight)
@@ -22,20 +23,38 @@ public struct SmoothButtonStyle: ButtonStyle {
 
     @ViewBuilder var backgroundStyle: some View {
         let shape = AnyShape(controlSize.controlShape)
+        let highlight = LinearGradient(
+            colors: [Color.white.opacity(0.4), Color.clear],
+            startPoint: .top, endPoint: .bottom
+        )
 
-        shape.foregroundStyle(.tint)
-            .overlay {
-                shape.foregroundStyle(
-                    LinearGradient(stops: [
-                        .init(color: Color.white.opacity(0.4), location: 0.0),
-                        .init(color: Color.white.opacity(0.0), location: 0.5),
-                        .init(color: Color.black.opacity(0.0), location: 0.5),
-                        .init(color: Color.black.opacity(0.4), location: 1.0),
-                    ], startPoint: .top, endPoint: .bottom)
+        let lowlight = LinearGradient(
+            colors: [Color.clear, Color.white.opacity(0.2)],
+            startPoint: .center, endPoint: .bottom
+        )
 
-                )
-                .blendMode(.softLight)
-            }
+        shape
+            .fill(
+                tintColor.gradient
+                    .shadow(.inner(color: Color.white.opacity(0.5), radius: 1.5, y: 1))
+                    .shadow(.inner(color: Color.white.opacity(0.2), radius: 3.0, y: 0))
+            )
+//            .stroke(highlight, lineWidth: 1.0)
+//            .stroke(lowlight, lineWidth: 1.0)
+//
+//        shape.foregroundStyle(.tint)
+//            .overlay {
+//                shape.foregroundStyle(
+//                    LinearGradient(stops: [
+//                        .init(color: Color.white.opacity(0.4), location: 0.0),
+//                        .init(color: Color.white.opacity(0.0), location: 0.5),
+//                        .init(color: Color.black.opacity(0.0), location: 0.5),
+//                        .init(color: Color.black.opacity(0.4), location: 1.0),
+//                    ], startPoint: .top, endPoint: .bottom)
+//
+//                )
+//                .blendMode(.softLight)
+//            }
     }
 }
 
@@ -45,47 +64,26 @@ public extension ButtonStyle where Self == SmoothButtonStyle {
     }
 }
 
-#Preview {
-    List {
-        ForEach([ControlSize.mini, .small, .regular, .large, .extraLarge], id: \.self) { controlSize in
-            Section(String(describing: controlSize)) {
-                VStack {
-                    HStack {
-                        Button("Bordered", action: {})
-                            .buttonStyle(.bordered)
-                            .tint(nil)
+struct SmoothButtonStyleDemo: View {
+    @State var colorHue: Double = 0.0
 
-                        Button("Bordered Tint", action: {})
-                            .buttonStyle(.bordered)
-                            .tint(.purple)
-                    }
-
-                    Divider()
-
-                    HStack {
-                        Button("Prominent", action: {})
-                            .buttonStyle(.borderedProminent)
-                            .tint(nil)
-
-                        Button("Prominent Tint", action: {})
-                            .buttonStyle(.borderedProminent)
-                            .tint(.orange)
-                    }
-
-                    Divider()
-
-                    HStack {
-                        Button("Smooth", action: {})
-                            .buttonStyle(.smooth)
-                            .tint(nil)
-
-                        Button("Smooth Tint", action: {})
-                            .buttonStyle(.smooth)
-                            .tint(.green)
-                    }
-                }
+    var body: some View {
+        VStack {
+            ForEach([ControlSize.mini, .small, .regular, .large, .extraLarge], id: \.self) { controlSize in
+                Button("Smooth Button – \(String(describing: controlSize))", action: { })
+                    .buttonStyle(.smooth)
+                    .controlSize(controlSize)
             }
-            .controlSize(controlSize)
+
+            Divider()
+
+            Slider(value: $colorHue, in: 0...360)
         }
+        .padding()
+        .tintColor(Color(hueOutOf360: colorHue))
     }
+}
+
+#Preview {
+    SmoothButtonStyleDemo()
 }
