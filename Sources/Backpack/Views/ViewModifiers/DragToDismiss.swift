@@ -1,9 +1,9 @@
 import SwiftUI
 
 extension View {
-    public func dragToDismiss(dismissHeight: CGFloat, beforeDismiss: (() -> Void)? = nil) -> some View {
+    public func dragToDismiss(distance: CGFloat, beforeDismiss: (() -> Void)? = nil) -> some View {
         self.modifier(
-            DragDownToDismissViewModifier(dragAutoDismissTarget: dismissHeight, beforeDismiss: beforeDismiss)
+            DragDownToDismissViewModifier(dragAutoDismissTarget: distance, beforeDismiss: beforeDismiss)
         )
     }
 }
@@ -79,7 +79,7 @@ public struct DragToDismissFullScreenMaterialCard<Content: View>: View {
         .presentationDragIndicator(.visible)
         .backgroundStyle(.regularMaterial)
         .containerShape(backgroundShape)
-        .dragToDismiss(dismissHeight: 200)
+        .dragToDismiss(distance: 200)
     }
 }
 
@@ -113,7 +113,7 @@ public struct CoverView: View {
         .presentationDragIndicator(.visible)
         .backgroundStyle(.regularMaterial)
         .containerShape(backgroundShape)
-        .dragToDismiss(dismissHeight: 200)
+        .dragToDismiss(distance: 200)
     }
 
     // MARK: - Dismissal
