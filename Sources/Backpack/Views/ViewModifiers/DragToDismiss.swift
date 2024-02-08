@@ -1,18 +1,23 @@
 import SwiftUI
 
 extension View {
-    public func dragToDismiss(dismissHeight: CGFloat) -> some View {
-        self.modifier(DragDownToDismissViewModifier(autoDismissHeight: dismissHeight))
+    public func dragToDismiss(dismissHeight: CGFloat, beforeDismiss: (() -> Void)? = nil) -> some View {
+        self.modifier(
+            DragDownToDismissViewModifier(dragAutoDismissTarget: dismissHeight, beforeDismiss: beforeDismiss)
+        )
     }
 }
 
 struct DragDownToDismissViewModifier: ViewModifier {
-    @Environment(\.dismiss) private var dismissAction
+    @Environment(\.dismiss) private var environmentDismiss
     @GestureState private var dragOffset: CGFloat = 0.0
-    private let dragAutoDismissTarget: CGFloat
 
-    init(autoDismissHeight: CGFloat) {
-        self.dragAutoDismissTarget = autoDismissHeight
+    private let dragAutoDismissTarget: CGFloat
+    private let beforeDismiss: (() -> Void)?
+
+    init(dragAutoDismissTarget: CGFloat, beforeDismiss: (() -> Void)?) {
+        self.dragAutoDismissTarget = dragAutoDismissTarget
+        self.beforeDismiss = beforeDismiss
     }
 
     func body(content: Content) -> some View {
@@ -39,10 +44,17 @@ struct DragDownToDismissViewModifier: ViewModifier {
             }
         }
     }
+
+    private func dismissAction() {
+        beforeDismiss?()
+        environmentDismiss()
+    }
 }
 
 // MARK: - Examples
 
+// Mark as deprecated
+@available(*, deprecated, message: "DragToDismissFullScreenMaterialCard should be implemented as custom app UI.")
 public struct DragToDismissFullScreenMaterialCard<Content: View>: View {
     let content: Content
 
