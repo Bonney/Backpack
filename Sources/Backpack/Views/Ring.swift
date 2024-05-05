@@ -64,8 +64,6 @@ struct RingFill: View {
     }
 
     var body: some View {
-        let _ = Self._printChanges()
-
         Circle()
             .trim(from: 0.0, to: progress)
             .stroke(style: strokeStyle)
