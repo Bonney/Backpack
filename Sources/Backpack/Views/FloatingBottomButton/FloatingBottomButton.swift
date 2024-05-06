@@ -3,10 +3,11 @@ import SwiftUI
 extension View {
 
     @ViewBuilder
-    public func bottomButton<V: View>(@ViewBuilder button: @escaping () -> V) -> some View {
+    public func bottomButton<V: View>(maxWidth: CGFloat? = .infinity, @ViewBuilder button: @escaping () -> V) -> some View {
+
         safeAreaInset(edge: .bottom, alignment: .center, spacing: nil) {
             button()
-                .buttonStyle(.smooth(maxWidth: .infinity))
+                .buttonStyle(.smooth(maxWidth: maxWidth))
                 .controlSize(.large)
                 .padding(8)
         }
