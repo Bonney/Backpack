@@ -8,7 +8,7 @@ extension View {
             button()
                 .buttonStyle(.smooth(maxWidth: .infinity))
                 .controlSize(.large)
-                .padding(.horizontal, 8)
+                .padding(8)
         }
     }
 }
