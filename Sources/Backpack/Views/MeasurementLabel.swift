@@ -5,7 +5,7 @@ import Foundation
 /// two horizontally-aligned labels for the value and unit.
 public struct MeasurementLabel<Content, UnitType>: View where Content: View, UnitType: Unit {
     let measurement: Measurement<UnitType>
-
+    let fractionLength: Int
     let alignment: VerticalAlignment
     let spacing: CGFloat?
 
@@ -13,11 +13,13 @@ public struct MeasurementLabel<Content, UnitType>: View where Content: View, Uni
 
     public init(
         _ measurement: Measurement<UnitType>,
+        fractionLength: Int = 1,
         alignment: VerticalAlignment = .firstTextBaseline,
         spacing: CGFloat?,
         @ViewBuilder content: @escaping (_ value: Text, _ symbol: Text) -> Content
     ) {
         self.measurement = measurement
+        self.fractionLength = fractionLength
         self.alignment = alignment
         self.spacing = spacing
         self.content = content
@@ -25,7 +27,10 @@ public struct MeasurementLabel<Content, UnitType>: View where Content: View, Uni
 
     public var body: some View {
         HStack(alignment: alignment, spacing: spacing) {
-            content(Text(measurement.value, format: .number), Text(measurement.unit.symbol))
+            content(
+                Text(measurement.value, format: .number.precision(.fractionLength(fractionLength))),
+                Text(measurement.unit.symbol)
+            )
         }
     }
 }

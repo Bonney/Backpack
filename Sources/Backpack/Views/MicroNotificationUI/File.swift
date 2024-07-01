@@ -106,6 +106,31 @@ struct MiniNotificationPresenter: View {
             Spacer()
 
             HStack {
+
+                Button {
+                    withAnimation(.bouncy) {
+                        if content == nil {
+                            content = .previewSaved
+                            Task {
+                                try? await Task.sleep(for: .seconds(2))
+                                await MainActor.run {
+                                    withAnimation(.bouncy) {
+                                        content = nil
+                                    }
+                                }
+                            }
+                        } else {
+                            content = nil
+                        }
+                    }
+                } label: {
+                    CompactGrayControlPlatter {
+                        Text(content == nil ? "Show" : "Hide")
+                            .contentTransition(.numericText())
+                    }
+                }
+                .buttonStyle(.plain)
+
                 Button {
                     content = nil
                 } label: {
@@ -132,7 +157,8 @@ struct MiniNotificationPresenter: View {
         .overlay(alignment: .top) {
             if let content {
                 MiniNotificationView(content: content)
-                    .animation(.bouncy, value: content)
+                    .transition(.blurReplace)
+//                    .transition(.move(edge: .top).combined(with: .blurReplace))
             }
         }
     }
