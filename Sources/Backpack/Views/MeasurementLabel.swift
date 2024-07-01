@@ -28,7 +28,7 @@ public struct MeasurementLabel<Content, UnitType>: View where Content: View, Uni
     public var body: some View {
         HStack(alignment: alignment, spacing: spacing) {
             content(
-                Text(measurement.value, format: .number.precision(.fractionLength(fractionLength))),
+                Text(measurement.value, format: .number.precision(.fractionLength(0...fractionLength))),
                 Text(measurement.unit.symbol)
             )
         }
@@ -37,13 +37,21 @@ public struct MeasurementLabel<Content, UnitType>: View where Content: View, Uni
 
 
 #Preview {
-    MeasurementLabel(Measurement(value: 16.9, unit: UnitVolume.fluidOunces), spacing: 2) { value, symbol in
-        value
-            .font(.system(size: 80, weight: .semibold, design: .rounded))
-        symbol
-            .font(.system(size: 32, weight: .regular, design: .rounded))
-            .foregroundStyle(.secondary)
-    }
-    .frame(width: 300, height: 200, alignment: .center)
+    VStack {
+        MeasurementLabel(Measurement(value: 16.9, unit: UnitVolume.fluidOunces), spacing: 2) { value, symbol in
+            value
+                .font(.system(size: 80, weight: .semibold, design: .rounded))
+            symbol
+                .font(.system(size: 32, weight: .regular, design: .rounded))
+                .foregroundStyle(.secondary)
+        }
 
+        MeasurementLabel(Measurement(value: 50.23456, unit: UnitVolume.fluidOunces), spacing: 2) { value, symbol in
+            value
+                .font(.system(size: 80, weight: .semibold, design: .rounded))
+            symbol
+                .font(.system(size: 32, weight: .regular, design: .rounded))
+                .foregroundStyle(.secondary)
+        }
+    }
 }
