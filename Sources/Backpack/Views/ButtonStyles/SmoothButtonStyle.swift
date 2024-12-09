@@ -13,7 +13,7 @@ public struct SmoothButtonStyle: ButtonStyle {
 
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .foregroundStyle(Color.white)
+            .foregroundStyle(tintColor.contrastingForegroundColor)
             .shadow(color: Color.black.opacity(0.1), radius: 2, x: 0, y: 0)
             .font(controlSize.font)
             .frame(maxWidth: maxWidth, alignment: .center)

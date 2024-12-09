@@ -60,7 +60,7 @@ public extension SwiftUI.Color {
         self.contrastingForegroundColor()
     }
 
-    func contrastingForegroundColor(luminanceTolerance: CGFloat = 0.55) -> Color {
+    func contrastingForegroundColor(luminanceTolerance: CGFloat = 0.6) -> Color {
         self.isBright(luminanceTolerance: luminanceTolerance) ? Color.black : Color.white
     }
 
