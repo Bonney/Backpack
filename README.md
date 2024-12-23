@@ -11,5 +11,3 @@
 **Everything in here has been mostly, kind of, sort of tested. A little bit. But not much.** And not with real tests.
 
 Take it, use it, contribute if you want!
-
-Made with love, in Maine.
