@@ -1,15 +1,28 @@
 import SwiftUI
 
 extension View {
-
     @ViewBuilder
-    public func bottomButton<V: View>(maxWidth: CGFloat? = .infinity, @ViewBuilder button: @escaping () -> V) -> some View {
-
+    public func bottomButton<V: View>(
+        maxWidth: CGFloat? = .infinity,
+        blurBottom: Bool = true,
+        @ViewBuilder button: @escaping () -> V
+    ) -> some View {
         safeAreaInset(edge: .bottom, alignment: .center, spacing: nil) {
             button()
                 .buttonStyle(.smooth(maxWidth: maxWidth))
                 .controlSize(.large)
-                .padding(8)
+                .padding(8.0)
+                .padding(.top, 8.0) // for variable blur background padding
+                .background {
+                    if blurBottom {
+                        VariableBlurView(
+                            maxBlurRadius: 8.0,
+                            direction: .blurredBottomClearTop,
+                            startOffset: 0.0
+                        )
+                        .ignoresSafeArea()
+                    }
+                }
         }
     }
 }
