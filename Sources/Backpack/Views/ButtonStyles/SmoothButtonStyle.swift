@@ -51,7 +51,7 @@ struct SmoothButtonStyleDemo: View {
     @State var colorHue: Double = 0.0
 
     var body: some View {
-        VStack {
+        VStack(spacing: 24.0) {
             ForEach([ControlSize.mini, .small, .regular, .large, .extraLarge], id: \.self) { controlSize in
                 Button("Smooth Button – \(String(describing: controlSize))", action: { })
                     .buttonStyle(.smooth)
@@ -61,6 +61,8 @@ struct SmoothButtonStyleDemo: View {
             Divider()
 
             Slider(value: $colorHue, in: 0...360)
+
+            Spacer()
         }
         .padding()
         .tintColor(Color(hueOutOf360: colorHue))
