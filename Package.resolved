@@ -1,0 +1,24 @@
+{
+  "originHash" : "ce38cb01f8e4755416ce9f2d767534174cfa3d90919cdfbd9fda4945442c796d",
+  "pins" : [
+    {
+      "identity" : "backpack",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Bonney/Backpack",
+      "state" : {
+        "branch" : "main",
+        "revision" : "231e2520fe423eb6e6528d33ff9e9e38ddb60856"
+      }
+    },
+    {
+      "identity" : "chromakit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/HarshilShah/ChromaKit",
+      "state" : {
+        "branch" : "main",
+        "revision" : "ac1f51f9cc04d86edba97fa97cd7e23be675c650"
+      }
+    }
+  ],
+  "version" : 3
+}
