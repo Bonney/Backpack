@@ -22,6 +22,11 @@ public enum Timeframe {
 
     /// Query for a specific date range.
     case from(start: Date, end: Date)
+
+    /// Allow initializing a `.from(start:end:)` timeframe from a `Date`.
+    public static func date(_ date: Date) -> Timeframe {
+        return .from(start: date.startOfDay, end: date.endOfDay)
+    }
 }
 
 extension Timeframe {
