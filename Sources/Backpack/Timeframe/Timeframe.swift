@@ -65,13 +65,17 @@ extension Timeframe {
     }
 }
 
+extension Timeframe: Sendable { }
+
 extension Timeframe: Hashable { }
 
-extension Timeframe: Identifiable, CustomStringConvertible {
+extension Timeframe: Identifiable {
     public var id: String {
         self.description
     }
+}
 
+extension Timeframe: CustomStringConvertible {
     public var description: String {
         switch self {
             case .allTime:
