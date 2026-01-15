@@ -87,8 +87,15 @@ public extension Date {
             formatter.dateStyle = .long
             formatter.timeStyle = .short
         }
-        let string = formatter.string(from: self)
-        return ( string.replacingOccurrences(of: "12:00 AM", with: "Midnight").replacingOccurrences(of: "12:00 PM", with: "Noon") )
+        var string = formatter.string(from: self)
+
+        // Handle various time formats for midnight and noon (case-insensitive)
+        string = string.replacingOccurrences(of: "12:00 AM", with: "Midnight", options: .caseInsensitive)
+        string = string.replacingOccurrences(of: "12:00 PM", with: "Noon", options: .caseInsensitive)
+        string = string.replacingOccurrences(of: "12:00 a.m.", with: "Midnight", options: .caseInsensitive)
+        string = string.replacingOccurrences(of: "12:00 p.m.", with: "Noon", options: .caseInsensitive)
+
+        return string
     }
 }
 
@@ -389,23 +396,23 @@ public extension Date {
     }
 
     var startOfMonth: Date? {
-        let components = Calendar.current.dateComponents([.year, .month], from: Date.today)
+        let components = Calendar.current.dateComponents([.year, .month], from: self)
         return Calendar.current.date(from: components)?.startOfDay
     }
 
     var endOfMonth: Date? {
-        let components = Calendar.current.dateComponents([.year, .month], from: Date.today)
+        let components = Calendar.current.dateComponents([.year, .month], from: self)
         guard let startOfMonth = Calendar.current.date(from: components) else { return nil }
         return Calendar.current.date(byAdding: DateComponents(month: 1, day: -1), to: startOfMonth)?.endOfDay
     }
 
     var startOfYear: Date? {
-        let components = Calendar.current.dateComponents([.year], from: Date.today)
+        let components = Calendar.current.dateComponents([.year], from: self)
         return Calendar.current.date(from: components)?.startOfDay
     }
 
     var endOfYear: Date? {
-        let components = Calendar.current.dateComponents([.year], from: Date.today)
+        let components = Calendar.current.dateComponents([.year], from: self)
         guard let startOfYear = Calendar.current.date(from: components) else { return nil }
         return Calendar.current.date(byAdding: DateComponents(year: 1, day: -1), to: startOfYear)?.endOfDay
     }

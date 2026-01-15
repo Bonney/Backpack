@@ -30,17 +30,19 @@ public extension Date {
     }
 
     func isInTheNext(number count: Int, of component: Calendar.Component) -> Bool {
-        guard let forwardDate = Calendar.current.date(byAdding: component, value: count, to: Date()) else {
+        let now = Date()
+        guard let forwardDate = Calendar.current.date(byAdding: component, value: count, to: now) else {
             return false
         }
-        return self < forwardDate
+        return self >= now && self < forwardDate
     }
 
     func isInTheLast(number count: Int, of component: Calendar.Component) -> Bool {
-        guard let backwardDate = Calendar.current.date(byAdding: component, value: -count, to: Date()) else {
+        let now = Date()
+        guard let backwardDate = Calendar.current.date(byAdding: component, value: -count, to: now) else {
             return false
         }
-        return self > backwardDate
+        return self > backwardDate && self <= now
     }
 
 }

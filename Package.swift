@@ -16,7 +16,11 @@ let package = Package(
     dependencies: [
     ],
     targets: [
-        .target(name: "Backpack", dependencies: []),
+        .target(
+            name: "Backpack",
+            dependencies: [],
+            resources: [.process("Colors/Colors.xcassets")]
+        ),
         .testTarget(
             name: "BackpackTests",
             dependencies: ["Backpack"]
