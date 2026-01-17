@@ -39,23 +39,26 @@ extension Timeframe {
                 return Date.now.startOfDay ... Date.now.endOfDay
 
             case .thisWeek:
-                guard let start = Date.now.startOfWeek, let end = Date.now.endOfWeek else {
-                    Timeframe.logger.error("Couldn't find start/end dates for .thisWeek")
-                    fatalError()
+                let start = Date.now.startOfWeek ?? Date.now.startOfDay
+                let end = Date.now.endOfWeek ?? Date.now.endOfDay
+                if start == Date.now.startOfDay || end == Date.now.endOfDay {
+                    Timeframe.logger.warning("Using fallback dates for .thisWeek")
                 }
                 return start ... end
 
             case .thisMonth:
-                guard let start = Date.now.startOfMonth, let end = Date.now.endOfMonth else {
-                    Timeframe.logger.error("Couldn't find start/end dates for .thisMonth")
-                    fatalError()
+                let start = Date.now.startOfMonth ?? Date.now.startOfDay
+                let end = Date.now.endOfMonth ?? Date.now.endOfDay
+                if start == Date.now.startOfDay || end == Date.now.endOfDay {
+                    Timeframe.logger.warning("Using fallback dates for .thisMonth")
                 }
                 return start ... end
 
             case .thisYear:
-                guard let start = Date.now.startOfMonth, let end = Date.now.endOfMonth else {
-                    Timeframe.logger.error("Couldn't find start/end dates for .thisMonth")
-                    fatalError()
+                let start = Date.now.startOfYear ?? Date.now.startOfDay
+                let end = Date.now.endOfYear ?? Date.now.endOfDay
+                if start == Date.now.startOfDay || end == Date.now.endOfDay {
+                    Timeframe.logger.warning("Using fallback dates for .thisYear")
                 }
                 return start ... end
 

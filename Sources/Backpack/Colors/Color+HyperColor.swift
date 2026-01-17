@@ -1,17 +1,17 @@
 import SwiftUI
 
 extension Color {
-    public static let hyperColors = [
-        Color(ColorResource.hyperRed),
-        Color(ColorResource.hyperPink),
-        Color(ColorResource.hyperPurple),
-        Color(ColorResource.hyperIndigo),
-        Color(ColorResource.hyperBlue),
-        Color(ColorResource.hyperTeal),
-        Color(ColorResource.hyperCyan),
-        Color(ColorResource.hyperGreen),
-        Color(ColorResource.hyperYellow),
-        Color(ColorResource.hyperOrange)
+    public static let hyperColors: [Color] = [
+        hyper.red,
+        hyper.pink,
+        hyper.purple,
+        hyper.indigo,
+        hyper.blue,
+        hyper.teal,
+        hyper.cyan,
+        hyper.green,
+        hyper.yellow,
+        hyper.orange
     ]
 }
 
