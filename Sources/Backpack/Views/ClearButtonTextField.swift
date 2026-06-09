@@ -59,7 +59,8 @@ public struct ClearButtonTextField<Label: View>: View {
         }
             .overlay(alignment: .trailing) {
                 clearButton
-                    .opacity(text.wrappedValue == "" ? 0 : 1)
+                    .opacity(text.wrappedValue.isEmpty ? 0 : 1)
+                    .allowsHitTesting(text.wrappedValue.isEmpty == false)
                     .animation(.easeOut, value: text.wrappedValue)
                     .padding(.horizontal, 4)
             }
