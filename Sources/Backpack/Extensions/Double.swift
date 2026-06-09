@@ -43,11 +43,13 @@ public extension Double {
 
 public extension Double {
 
+    @available(*, deprecated, message: "Use `self.formatted(.number.precision(.fractionLength(0...places)))` — locale-aware.")
     func formattedDecimalString(places: Int) -> String {
         let rounded = self.rounded(to: places)
-        return rounded.removeTrailingZeroes()
+        return truncatingRemainder(dividingBy: 1) == 0 ? String(format: "%.0f", rounded) : String(rounded)
     }
 
+    @available(*, deprecated, renamed: "trimmed", message: "Duplicate of `trimmed`.")
     func removeTrailingZeroes() -> String {
         return truncatingRemainder(dividingBy: 1) == 0 ? String(format: "%.0f", self) : String(self)
     }

@@ -135,7 +135,9 @@ final class DoubleTests: XCTestCase {
     }
 
     // MARK: - Formatted Decimal String Tests
+    // The four methods below are deprecated; suppress the warnings in tests that exercise them.
 
+    @available(*, deprecated)
     func testFormattedDecimalStringTwoPlaces() throws {
         let value: Double = 3.14159
         let formatted = value.formattedDecimalString(places: 2)
@@ -143,6 +145,7 @@ final class DoubleTests: XCTestCase {
         XCTAssertEqual(formatted, "3.14")
     }
 
+    @available(*, deprecated)
     func testFormattedDecimalStringRemovesTrailingZeros() throws {
         let value: Double = 5.0
         let formatted = value.formattedDecimalString(places: 2)
@@ -151,6 +154,7 @@ final class DoubleTests: XCTestCase {
         XCTAssertEqual(formatted, "5")
     }
 
+    @available(*, deprecated)
     func testFormattedDecimalStringThreePlaces() throws {
         let value: Double = 2.718281828
         let formatted = value.formattedDecimalString(places: 3)
@@ -160,6 +164,7 @@ final class DoubleTests: XCTestCase {
 
     // MARK: - Remove Trailing Zeroes Tests
 
+    @available(*, deprecated)
     func testRemoveTrailingZeroesWholeNumber() throws {
         let value: Double = 42.0
         let result = value.removeTrailingZeroes()
@@ -167,6 +172,7 @@ final class DoubleTests: XCTestCase {
         XCTAssertEqual(result, "42")
     }
 
+    @available(*, deprecated)
     func testRemoveTrailingZeroesDecimal() throws {
         let value: Double = 42.5
         let result = value.removeTrailingZeroes()
@@ -174,6 +180,7 @@ final class DoubleTests: XCTestCase {
         XCTAssertEqual(result, "42.5")
     }
 
+    @available(*, deprecated)
     func testRemoveTrailingZeroesLongDecimal() throws {
         let value: Double = 3.14159
         let result = value.removeTrailingZeroes()
@@ -238,6 +245,7 @@ final class DoubleTests: XCTestCase {
 
     // MARK: - Edge Cases
 
+    @available(*, deprecated)
     func testZeroValue() throws {
         let value: Double = 0.0
 
@@ -280,6 +288,7 @@ final class DoubleTests: XCTestCase {
         XCTAssertTrue(rounded == 1.0 || rounded == 1.01)
     }
 
+    @available(*, deprecated)
     func testFormattedDecimalStringConsistency() throws {
         let value: Double = 3.14159
         let formatted1 = value.formattedDecimalString(places: 2)
