@@ -10,7 +10,6 @@ public enum SheetDismissLabel: String {
 
 /// Calls `dismiss` on the current environment, meant to dismiss sheets.
 public struct SheetDismissButton: View {
-    @Environment(\.presentationMode) var presentationMode
     @Environment(\.dismiss) var dismiss
     var label: SheetDismissLabel
 
@@ -25,11 +24,10 @@ public struct SheetDismissButton: View {
     public var body: some View {
         Button(role: .cancel) {
             action?()
-            dismiss.callAsFunction()
+            dismiss()
         } label: {
             buttonLabel()
         }
-        .disabled(!presentationMode.wrappedValue.isPresented)
     }
 
     @ViewBuilder func buttonLabel() -> some View {

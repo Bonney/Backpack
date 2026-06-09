@@ -26,11 +26,13 @@ public struct InfiniteHeight: ViewModifier {
 
 public extension View {
     /// Returns a view with infinite width and the specified alignment.
+    @available(*, deprecated, message: "Use `.frame(maxWidth: .infinity, alignment:)` directly.")
     func infiniteWidth(alignment: Alignment = .leading) -> some View {
        modifier(InfiniteWidth(alignment: alignment))
     }
 
     /// Returns a view with infinite height and the specified alignment.
+    @available(*, deprecated, message: "Use `.frame(maxHeight: .infinity, alignment:)` directly.")
     func infiniteHeight(alignment: Alignment = .center) -> some View {
         modifier(InfiniteHeight(alignment: alignment))
     }

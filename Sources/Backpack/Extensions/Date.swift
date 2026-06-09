@@ -164,15 +164,8 @@ public extension TimeInterval {
     }
 
     func format(_ duration: TimeInterval) -> String {
-        let formatter = DateComponentsFormatter()
-        formatter.zeroFormattingBehavior = .pad
-        formatter.allowedUnits = [.minute, .second]
-
-        if duration >= 3600 {
-            formatter.allowedUnits.insert(.hour)
-        }
-
-        return formatter.string(from: duration)!
+        let pattern: Duration.TimeFormatStyle.Pattern = duration >= 3600 ? .hourMinuteSecond : .minuteSecond
+        return Duration.seconds(duration).formatted(.time(pattern: pattern))
     }
 
     func asMinutes() -> Double { return self / (60.0) }

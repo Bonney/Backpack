@@ -5,6 +5,7 @@
 import SwiftUI
 
 /// SwiftUI `Toggle` that executes an `.onChange(of:)` for the bound value.
+@available(*, deprecated, message: "Attach `.onChange(of:) { _, newValue in … }` to a plain `Toggle` at the call site.")
 public struct ActionToggle<Label: View>: View {
     @Binding var isOn: Bool
     let label: Label
@@ -25,12 +26,13 @@ public struct ActionToggle<Label: View>: View {
         Toggle(isOn: $isOn) {
             label
         }
-        .onChange(of: isOn) { newValue in
+        .onChange(of: isOn) { _, newValue in
             action(newValue)
         }
     }
 }
 
+@available(*, deprecated)
 fileprivate struct ActionToggle_Example: View {
     @State private var isOn: Bool = false
     @State private var output: String = "init"
@@ -49,6 +51,7 @@ fileprivate struct ActionToggle_Example: View {
     }
 }
 
+@available(*, deprecated)
 struct ActionToggle_Previews: PreviewProvider {
     static var previews: some View {
         ActionToggle_Example()

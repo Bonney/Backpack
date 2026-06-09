@@ -2,6 +2,7 @@ import SwiftUI
 
 public extension SwiftUI.Text {
     /// Appends a given String to the end of this Text view.
+    @available(*, deprecated, message: "Use Text + Text concatenation directly: `Text(\"a\") + Text(\" b\")`.")
     func appending(_ suffix: String, withSpace: Bool = false) -> Text {
         return self.appending(withSpace: withSpace) {
             Text(verbatim: suffix)
@@ -9,6 +10,7 @@ public extension SwiftUI.Text {
     }
 
     /// Appends the given Text view to the end of this Text view.
+    @available(*, deprecated, message: "Use Text + Text concatenation directly: `Text(\"a\") + Text(\" b\")`.")
     func appending(withSpace: Bool = false, @ViewBuilder _ suffix: () -> Text) -> Text {
         if withSpace {
             return self + Text(" ") + suffix()

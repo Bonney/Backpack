@@ -134,8 +134,7 @@ public extension ButtonStyle where Self == AquaButtonStyle {
         }
     }
     .padding()
-    .infiniteWidth(alignment: .center)
-    .infiniteHeight()
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
     .background {
         LinearGradient(colors: LabeledColor.systemColors.map { $0.color }.reversed(), startPoint: .topLeading, endPoint: .bottomTrailing)
             .ignoresSafeArea()

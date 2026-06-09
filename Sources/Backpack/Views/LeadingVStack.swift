@@ -8,6 +8,7 @@
 import SwiftUI
 
 /// SwiftUI `VStack` with the `alignment` set to `.leading`.
+@available(*, deprecated, message: "Use VStack(alignment: .leading) directly — same call-site length, no wrapper.")
 public struct LeadingVStack<Content: View>: View {
     var spacing: CGFloat?
     var content: Content
@@ -24,6 +25,7 @@ public struct LeadingVStack<Content: View>: View {
     }
 }
 
+@available(*, deprecated)
 struct LeadingVStack_Previews: PreviewProvider {
     static var previews: some View {
         LeadingVStack {
