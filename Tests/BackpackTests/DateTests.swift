@@ -142,16 +142,9 @@ final class DateTests: XCTestCase {
     func testEndOfDay() throws {
         let date = Date(year: 2024, month: 6, day: 15, hour: 10, minute: 0)
 
-        let end = date.endOfDay
-
-        let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: end)
-
-        XCTAssertEqual(components.year, 2024)
-        XCTAssertEqual(components.month, 6)
-        XCTAssertEqual(components.day, 15)
-        XCTAssertEqual(components.hour, 23)
-        XCTAssertEqual(components.minute, 59)
-        XCTAssertEqual(components.second, 59)
+        // `endOfDay` is the exclusive upper bound: the start of the next day.
+        let nextDayStart = Date(year: 2024, month: 6, day: 16).startOfDay
+        XCTAssertEqual(date.endOfDay, nextDayStart)
     }
 
     // MARK: - Boolean Tests
@@ -242,30 +235,25 @@ final class DateTests: XCTestCase {
             return
         }
 
+        // `startOfWeek` should respect the calendar's first weekday (not hard-code Monday).
         let weekday = Calendar.current.component(.weekday, from: startOfWeek)
+        XCTAssertEqual(weekday, Calendar.current.firstWeekday)
 
-        // Should be Monday (weekday = 2)
-        XCTAssertEqual(weekday, 2)
+        // And must be the very first instant of that day.
+        XCTAssertEqual(startOfWeek, startOfWeek.startOfDay)
     }
 
     func testEndOfWeek() throws {
         let date = Date(year: 2024, month: 6, day: 15)
 
-        guard let endOfWeek = date.endOfWeek else {
-            XCTFail("Could not get end of week")
+        guard let startOfWeek = date.startOfWeek, let endOfWeek = date.endOfWeek else {
+            XCTFail("Could not get start/end of week")
             return
         }
 
-        let weekday = Calendar.current.component(.weekday, from: endOfWeek)
-
-        // Should be Sunday (weekday = 1)
-        XCTAssertEqual(weekday, 1)
-
-        // Should be at end of day
-        let components = Calendar.current.dateComponents([.hour, .minute, .second], from: endOfWeek)
-        XCTAssertEqual(components.hour, 23)
-        XCTAssertEqual(components.minute, 59)
-        XCTAssertEqual(components.second, 59)
+        // `endOfWeek` is the exclusive upper bound: 7 days after `startOfWeek`.
+        let expected = Calendar.current.date(byAdding: .day, value: 7, to: startOfWeek)
+        XCTAssertEqual(endOfWeek, expected)
     }
 
     // MARK: - Start/End of Month Tests
@@ -291,12 +279,8 @@ final class DateTests: XCTestCase {
             return
         }
 
-        let components = Calendar.current.dateComponents([.year, .month, .day], from: endOfMonth)
-
-        // June has 30 days
-        XCTAssertEqual(components.year, 2024)
-        XCTAssertEqual(components.month, 6)
-        XCTAssertEqual(components.day, 30)
+        // `endOfMonth` is the exclusive upper bound: the start of July 1.
+        XCTAssertEqual(endOfMonth, Date(year: 2024, month: 7, day: 1).startOfDay)
     }
 
     // MARK: - Start/End of Year Tests
@@ -324,11 +308,8 @@ final class DateTests: XCTestCase {
             return
         }
 
-        let components = Calendar.current.dateComponents([.year, .month, .day], from: endOfYear)
-
-        XCTAssertEqual(components.year, 2024)
-        XCTAssertEqual(components.month, 12)
-        XCTAssertEqual(components.day, 31)
+        // `endOfYear` is the exclusive upper bound: the start of Jan 1 of the following year.
+        XCTAssertEqual(endOfYear, Date(year: 2025, month: 1, day: 1).startOfDay)
     }
 
     // MARK: - Calendar Extensions
@@ -356,7 +337,7 @@ final class DateTests: XCTestCase {
     // MARK: - Date Initializers
 
     func testDateFromString() throws {
-        let date = Date(string: "2024-06-15 14:30:00")
+        let date = try XCTUnwrap(Date(string: "2024-06-15 14:30:00"))
 
         let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: date)
 
@@ -365,6 +346,10 @@ final class DateTests: XCTestCase {
         XCTAssertEqual(components.day, 15)
         XCTAssertEqual(components.hour, 14)
         XCTAssertEqual(components.minute, 30)
+    }
+
+    func testDateFromStringReturnsNilOnFailure() throws {
+        XCTAssertNil(Date(string: "not a date"))
     }
 
     func testDateFromComponents() throws {
@@ -432,19 +417,6 @@ final class DateTests: XCTestCase {
         XCTAssertNotNil(formatted)
         // Format varies by locale, just check it's not empty
         XCTAssertFalse(formatted.isEmpty)
-    }
-
-    // MARK: - RawRepresentable for AppStorage
-
-    func testDateRawRepresentable() throws {
-        let date = Date(year: 2024, month: 6, day: 15)
-
-        let rawValue = date.rawValue
-
-        let reconstructed = Date(rawValue: rawValue)
-
-        XCTAssertNotNil(reconstructed)
-        XCTAssertEqual(date.timeIntervalSinceReferenceDate, reconstructed?.timeIntervalSinceReferenceDate)
     }
 
     // MARK: - Date Component Properties

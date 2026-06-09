@@ -10,7 +10,7 @@ import UIKit
 
 /// A class that manages local notifications for the app.
 @MainActor public final class LocalNotifications: ObservableObject {
-    private static let logger = Logger(subsystem: "LocalNotifications", category: "LocalNotifications")
+    nonisolated private static let logger = Logger(subsystem: "LocalNotifications", category: "LocalNotifications")
 
     // MARK: - Lifecycle
 

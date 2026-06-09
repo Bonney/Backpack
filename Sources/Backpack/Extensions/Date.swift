@@ -105,12 +105,10 @@ public extension Date {
         return Calendar.current.startOfDay(for: self)
     }
 
+    /// The exclusive upper bound of the day containing this date — i.e. the start of the next day.
+    /// Uses `DateInterval` so DST transitions and leap seconds resolve correctly.
     var endOfDay: Date {
-        var components = DateComponents()
-        components.hour = 23
-        components.minute = 59
-        components.second = 59
-        return Calendar.current.date(byAdding: components, to: self.startOfDay) ?? self
+        Calendar.current.dateInterval(of: .day, for: self)?.end ?? self
     }
 }
 
@@ -145,7 +143,7 @@ public extension Date {
 // MARK: Ints & Doubles
 public extension Calendar {
     func numberOfDaysInMonth(for date: Date) -> Int {
-        return range(of: .day, in: .month, for: date)!.count
+        range(of: .day, in: .month, for: date)?.count ?? 0
     }
 
     func numberOfDaysBetween(_ from: Date, and to: Date) -> Int {
@@ -158,14 +156,15 @@ public extension Calendar {
 
 // MARK: Initializers
 public extension Date {
-    /// Initializes a date from a string
+    /// Initializes a date from a string.
     /// - Parameters:
     ///   - string: date input
     ///   - format: format, default is "yyyy-MM-dd HH:mm:ss"
-    init(string: String, format: String = "yyyy-MM-dd HH:mm:ss") {
+    /// - Returns: `nil` if `string` cannot be parsed with `format`.
+    init?(string: String, format: String = "yyyy-MM-dd HH:mm:ss") {
         let df = DateFormatter()
         df.dateFormat = format
-        guard let d = df.date(from: string) else { fatalError("Failed to initialize a Date object in the custom Date() extension. Matt, go fix your code.") }
+        guard let d = df.date(from: string) else { return nil }
         self.init(timeInterval: 0, since: d)
     }
 
@@ -336,7 +335,7 @@ public extension Date {
 struct DateStringsDemo: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text(Date(string: "2022-03-15 13:52:00"), format: .dateTime)
+            Text(Date(string: "2022-03-15 13:52:00") ?? .now, format: .dateTime)
             Text(Date().weekdayName)
             Text(Date().shortWeekdayName)
 //            Text(Date().monthName) + Text(" ") + Text(Date().dayNumber)
@@ -384,35 +383,27 @@ public extension Date {
     }
 
     var startOfWeek: Date? {
-        guard let sunday = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)) else { return nil }
-        return Calendar.current.date(byAdding: .day, value: 1, to: sunday)?.startOfDay
+        Calendar.current.dateInterval(of: .weekOfYear, for: self)?.start
     }
 
     var endOfWeek: Date? {
-        guard let sunday = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)) else { return nil }
-        return Calendar.current.date(byAdding: .day, value: 7, to: sunday)?.endOfDay
+        Calendar.current.dateInterval(of: .weekOfYear, for: self)?.end
     }
 
     var startOfMonth: Date? {
-        let components = Calendar.current.dateComponents([.year, .month], from: self)
-        return Calendar.current.date(from: components)?.startOfDay
+        Calendar.current.dateInterval(of: .month, for: self)?.start
     }
 
     var endOfMonth: Date? {
-        let components = Calendar.current.dateComponents([.year, .month], from: self)
-        guard let startOfMonth = Calendar.current.date(from: components) else { return nil }
-        return Calendar.current.date(byAdding: DateComponents(month: 1, day: -1), to: startOfMonth)?.endOfDay
+        Calendar.current.dateInterval(of: .month, for: self)?.end
     }
 
     var startOfYear: Date? {
-        let components = Calendar.current.dateComponents([.year], from: self)
-        return Calendar.current.date(from: components)?.startOfDay
+        Calendar.current.dateInterval(of: .year, for: self)?.start
     }
 
     var endOfYear: Date? {
-        let components = Calendar.current.dateComponents([.year], from: self)
-        guard let startOfYear = Calendar.current.date(from: components) else { return nil }
-        return Calendar.current.date(byAdding: DateComponents(year: 1, day: -1), to: startOfYear)?.endOfDay
+        Calendar.current.dateInterval(of: .year, for: self)?.end
     }
 
 

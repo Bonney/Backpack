@@ -25,10 +25,10 @@ final class TimeframeTests: XCTestCase {
         // allTime should start from Unix epoch
         XCTAssertEqual(range.lowerBound, Date(timeIntervalSince1970: 0))
 
-        // Should end at end of current day
+        // Should end at the exclusive upper bound of the current day (i.e. start of tomorrow).
         let now = Date.now
         XCTAssertTrue(range.upperBound >= now)
-        XCTAssertEqual(range.upperBound.startOfDay, now.startOfDay)
+        XCTAssertEqual(range.upperBound, now.endOfDay)
     }
 
     func testTodayDateRange() throws {
