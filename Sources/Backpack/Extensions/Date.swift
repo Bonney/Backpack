@@ -1,6 +1,5 @@
 //
 //  Date++.swift
-//  PhotoCal
 //
 //  Created by Matt Bonney on 1/5/21.
 //
@@ -41,41 +40,23 @@ public extension Date {
 // MARK: Strings
 public extension Date {
     var relativeDateAndTime: String {
-        let formatter = DateFormatter()
-        formatter.doesRelativeDateFormatting = true
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter.string(from: self)
+        self.formatted(.relative)
     }
 
     var shortWeekdayName: String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "E"
-        return dateFormatter.string(from: self).capitalized
+        self.formatted(.dateTime.weekday(.abbreviated))
     }
 
     var weekdayName: String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EEEE"
-        return dateFormatter.string(from: self).capitalized
+        self.formatted(.dateTime.weekday(.wide))
     }
 
     var monthDayYear: String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MM/dd/yyyy"
-        return dateFormatter.string(from: self)
-    }
-
-    func monthDay(alwaysTwoDigitDay: Bool = false) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = alwaysTwoDigitDay ? "M/dd" : "M/d"
-        return dateFormatter.string(from: self)
+        self.formatted(.dateTime.month().day().year())
     }
 
     var hourMinuteAMPM: String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "h:mm a"
-        return dateFormatter.string(from: self)
+        self.formatted(.dateTime.hour().minute())
     }
 
     func humanFormatted(short: Bool = false) -> String {
