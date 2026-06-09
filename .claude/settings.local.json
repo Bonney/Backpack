@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git commit -m ' *)",
+      "Bash(git stash *)",
+      "Bash(git pull *)",
+      "Bash(git checkout *)",
+      "Bash(git reset *)",
+      "Bash(git tag *)",
+      "Bash(git push *)",
+      "Bash(swift build *)",
+      "Read(//private/tmp/**)",
+      "Bash(awk '!seen[$0]++')"
+    ]
+  }
+}

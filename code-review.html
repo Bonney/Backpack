@@ -1,0 +1,655 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backpack — Code Review</title>
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --surface: #ffffff;
+    --ink: #1c1c1e;
+    --ink-soft: #4a4a4e;
+    --ink-mute: #7a7a80;
+    --rule: #e6e3dc;
+    --accent: #2f5fff;
+    --crit: #b91c1c;
+    --crit-bg: #fdecec;
+    --warn: #b25b00;
+    --warn-bg: #fff3e2;
+    --info: #2563af;
+    --info-bg: #e6f0fb;
+    --good: #1f7a3a;
+    --good-bg: #e8f5ec;
+    --code-bg: #f3f1ec;
+    --code-ink: #1b1d22;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  body { line-height: 1.55; }
+  main { max-width: 880px; margin: 0 auto; padding: 56px 28px 96px; }
+
+  /* Header */
+  .doc-header {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 28px;
+    margin-bottom: 40px;
+  }
+  .eyebrow {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-mute);
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-size: 36px;
+    line-height: 1.15;
+    margin: 0 0 12px;
+    letter-spacing: -0.02em;
+  }
+  .subtitle {
+    font-size: 17px;
+    color: var(--ink-soft);
+    margin: 0 0 20px;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    font-size: 13px;
+    color: var(--ink-mute);
+  }
+  .meta span { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; display: inline-block; }
+
+  /* TOC */
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin: 0 0 48px;
+  }
+  .toc h2 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-mute);
+    margin: 0 0 10px;
+    font-weight: 600;
+  }
+  .toc ol {
+    margin: 0;
+    padding-left: 18px;
+    columns: 2;
+    column-gap: 28px;
+  }
+  .toc li { margin: 4px 0; break-inside: avoid; }
+  .toc a {
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 14px;
+  }
+  .toc a:hover { color: var(--accent); text-decoration: underline; }
+
+  /* Section */
+  section { margin-bottom: 56px; }
+  h2.section {
+    font-size: 24px;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  h2.section .badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .badge.crit { background: var(--crit-bg); color: var(--crit); }
+  .badge.warn { background: var(--warn-bg); color: var(--warn); }
+  .badge.info { background: var(--info-bg); color: var(--info); }
+  .badge.good { background: var(--good-bg); color: var(--good); }
+
+  .section-lede {
+    color: var(--ink-soft);
+    font-size: 15px;
+    margin: 0 0 24px;
+  }
+
+  /* Findings */
+  .finding {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-left-width: 4px;
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin: 14px 0;
+  }
+  .finding.crit { border-left-color: var(--crit); }
+  .finding.warn { border-left-color: var(--warn); }
+  .finding.info { border-left-color: var(--info); }
+  .finding.good { border-left-color: var(--good); }
+
+  .finding-head {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .finding-head h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+  }
+  .file-ref {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--ink-mute);
+  }
+  .finding p { margin: 6px 0; color: var(--ink-soft); font-size: 14.5px; }
+  .finding p.fix { color: var(--ink); }
+  .finding p.fix::before {
+    content: "Fix ›";
+    font-weight: 600;
+    color: var(--accent);
+    margin-right: 6px;
+    letter-spacing: 0.02em;
+  }
+
+  /* Code */
+  code {
+    font-family: var(--mono);
+    font-size: 13px;
+    background: var(--code-bg);
+    color: var(--code-ink);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+  pre {
+    background: var(--code-bg);
+    color: var(--code-ink);
+    padding: 14px 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.55;
+    margin: 10px 0 4px;
+  }
+  pre code { background: none; padding: 0; }
+
+  /* Quick wins */
+  .quickwins {
+    background: linear-gradient(180deg, #fff 0%, #fbfaf5 100%);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 24px 28px;
+  }
+  .quickwins h2 { margin-top: 0; }
+  .quickwins ol { padding-left: 22px; margin: 12px 0 0; }
+  .quickwins li { margin: 8px 0; }
+
+  /* Footer */
+  footer {
+    margin-top: 80px;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+    font-size: 12.5px;
+    color: var(--ink-mute);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* Print */
+  @media print {
+    body { background: #fff; }
+    .toc, .finding, .quickwins { break-inside: avoid; }
+    main { padding: 24px; max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+<header class="doc-header">
+  <div class="eyebrow">Swift Package · Expert Review</div>
+  <h1>Backpack — Code Review</h1>
+  <p class="subtitle">Outdated patterns, redundant code, and bugs surfaced against an iOS 17 / macOS 14 / watchOS 10 baseline.</p>
+  <div class="meta">
+    <span><span class="dot" style="color:var(--crit)"></span> 9 bugs</span>
+    <span><span class="dot" style="color:var(--warn)"></span> 13 outdated</span>
+    <span><span class="dot" style="color:var(--info)"></span> 12 redundant</span>
+    <span><span class="dot" style="color:var(--ink-mute)"></span> Reviewed against Swift 5.9 / Foundation FormatStyle / SwiftUI 5</span>
+  </div>
+</header>
+
+<nav class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#bugs">Bugs (fix first)</a></li>
+    <li><a href="#outdated">Outdated — replace with stdlib / SwiftUI</a></li>
+    <li><a href="#redundant">Redundant within the package</a></li>
+    <li><a href="#minor">Minor &amp; style</a></li>
+    <li><a href="#quickwins">Quick-win cleanup order</a></li>
+  </ol>
+</nav>
+
+<!-- ===================== BUGS ===================== -->
+<section id="bugs">
+  <h2 class="section">Bugs <span class="badge crit">Fix first</span></h2>
+  <p class="section-lede">These are real defects: wrong behavior, shadowed APIs, or compiler-flagged hazards. Address before cleanup work.</p>
+
+  <article class="finding crit">
+    <div class="finding-head">
+      <h3>Self-import of the module</h3>
+      <span class="file-ref">LocalNotifications/NotificationContent.swift:1</span>
+    </div>
+    <p><code>import Backpack</code> sits inside the Backpack module. Compiler warns: <em>"file is part of module 'Backpack'; ignoring import"</em>.</p>
+    <p class="fix">Delete the line.</p>
+  </article>
+
+  <article class="finding crit">
+    <div class="finding-head">
+      <h3>Calendar trigger missing <code>.minute</code> component</h3>
+      <span class="file-ref">LocalNotifications/NotificationTrigger.swift:40</span>
+    </div>
+    <p><code>dateComponents([.second, .month, .hour, .day, .month, .year], from: date)</code> lists <code>.month</code> twice and omits <code>.minute</code>. Calendar triggers will fire on the wrong minute.</p>
+<pre><code>// Should be:
+let components = Calendar.current.dateComponents(
+    [.year, .month, .day, .hour, .minute, .second],
+    from: date
+)
+// Or, for a daily repeating alarm:
+let components = Calendar.current.dateComponents([.hour, .minute], from: date)</code></pre>
+  </article>
+
+  <article class="finding crit">
+    <div class="finding-head">
+      <h3><code>SFSymbol</code> typealias shadows the asset-name initializer</h3>
+      <span class="file-ref">Extensions/Image+Symbol.swift</span>
+    </div>
+    <p><code>typealias SFSymbol = Image</code> plus <code>init(_ name: String) { self.init(systemName: name) }</code> adds a same-signature initializer onto <code>Image</code> itself. <code>Image("MyAsset")</code> now silently looks up an SF Symbol instead of a bundled image.</p>
+    <p class="fix">Drop the typealias and either rename the init (<code>init(systemSymbol:)</code>) or put it on a distinct wrapper struct.</p>
+  </article>
+
+  <article class="finding crit">
+    <div class="finding-head">
+      <h3>Retroactive <code>Date: RawRepresentable</code> conformance</h3>
+      <span class="file-ref">Extensions/Date.swift:435</span>
+    </div>
+    <p>Compiler warning: <em>"extension declares a conformance of imported type 'Date' to imported protocol 'RawRepresentable'; this will not behave correctly if the owners of 'Foundation' introduce this conformance in the future."</em></p>
+    <p class="fix">Wrap it in your own type for <code>@AppStorage</code>:</p>
+<pre><code>public struct StoredDate: RawRepresentable {
+    public var date: Date
+    public var rawValue: String { String(date.timeIntervalSinceReferenceDate) }
+    public init?(rawValue: String) {
+        guard let t = Double(rawValue) else { return nil }
+        self.date = Date(timeIntervalSinceReferenceDate: t)
+    }
+}</code></pre>
+  </article>
+
+  <article class="finding crit">
+    <div class="finding-head">
+      <h3>Clear button stays hit-testable when invisible</h3>
+      <span class="file-ref">Views/ClearButtonTextField.swift:60–66</span>
+    </div>
+    <p>Button is hidden with <code>.opacity(0)</code> but still accepts taps, and the empty-string check uses <code>== ""</code> rather than <code>isEmpty</code>.</p>
+<pre><code>let isEmpty = text.wrappedValue.isEmpty
+clearButton
+    .opacity(isEmpty ? 0 : 1)
+    .allowsHitTesting(!isEmpty)
+    .animation(.easeOut, value: isEmpty)</code></pre>
+  </article>
+
+  <article class="finding crit">
+    <div class="finding-head">
+      <h3><code>endOfDay</code> / <code>endOfWeek</code> / <code>endOfMonth</code> / <code>endOfYear</code> are one second short</h3>
+      <span class="file-ref">Extensions/Date.swift:108–115, 386–415</span>
+    </div>
+    <p>Returning <code>23:59:59</code> is not the end of the day; it breaks at leap seconds and DST transitions, and "less than endOfDay" checks miss the final second.</p>
+<pre><code>// Use Foundation's DateInterval — respects calendar & timezone:
+var endOfDay: Date {
+    Calendar.current.dateInterval(of: .day, for: self)?.end ?? self
+}</code></pre>
+    <p>Same pattern applies to <code>startOfWeek</code>, which currently hard-codes Monday by adding a day to Sunday. <code>dateInterval(of: .weekOfYear, for:)</code> respects the user's <code>firstWeekday</code> — matching the spirit of the recent gregorian-calendar fix.</p>
+  </article>
+
+  <article class="finding crit">
+    <div class="finding-head">
+      <h3>Force-unwrap of optional <code>Calendar.range</code></h3>
+      <span class="file-ref">Extensions/Date.swift:147</span>
+    </div>
+    <p><code>range(of: .day, in: .month, for: date)!</code> crashes when given a date the calendar can't resolve.</p>
+    <p class="fix">Return <code>Int?</code> or default to 0.</p>
+  </article>
+
+  <article class="finding crit">
+    <div class="finding-head">
+      <h3>Swift 6 actor-isolation warning on logger</h3>
+      <span class="file-ref">LocalNotifications/LocalNotifications.swift</span>
+    </div>
+    <p><code>Logger</code> is referenced from nonisolated contexts but the class is <code>@MainActor</code>. Becomes a hard error under Swift 6.</p>
+    <p class="fix">Mark the static logger <code>nonisolated</code> or move it to file scope.</p>
+  </article>
+
+  <article class="finding crit">
+    <div class="finding-head">
+      <h3><code>fatalError</code> in <code>Date(string:format:)</code></h3>
+      <span class="file-ref">Extensions/Date.swift:165</span>
+    </div>
+    <p>Hard crash on parse failure. Fine for a debug assert, brutal for any client that ever loads user-supplied or remote strings.</p>
+    <p class="fix">Make the initializer failable (<code>init?(string:format:)</code>).</p>
+  </article>
+</section>
+
+<!-- ===================== OUTDATED ===================== -->
+<section id="outdated">
+  <h2 class="section">Outdated <span class="badge warn">Use stdlib / modern SwiftUI</span></h2>
+  <p class="section-lede">Each of these was useful at one point but is now covered by Foundation's <code>FormatStyle</code> APIs or a modern SwiftUI modifier. Deleting them shrinks the surface area without losing capability.</p>
+
+  <article class="finding warn">
+    <div class="finding-head">
+      <h3><code>DateFormatter</code> string properties</h3>
+      <span class="file-ref">Extensions/Date.swift — relativeDateAndTime, shortWeekdayName, weekdayName, monthDayYear, monthDay, hourMinuteAMPM, monthYearString, dayNumber</span>
+    </div>
+    <p>Each allocates a fresh <code>DateFormatter</code>. All become localizable <code>FormatStyle</code> one-liners:</p>
+<pre><code>weekdayName       → self.formatted(.dateTime.weekday(.wide))
+shortWeekdayName  → self.formatted(.dateTime.weekday(.abbreviated))
+monthDayYear      → self.formatted(.dateTime.month().day().year())
+hourMinuteAMPM    → self.formatted(.dateTime.hour().minute())
+monthYearString   → self.formatted(.dateTime.month(.wide).year())</code></pre>
+  </article>
+
+  <article class="finding warn">
+    <div class="finding-head">
+      <h3><code>DateComponentsFormatter</code> with force-unwrap</h3>
+      <span class="file-ref">Extensions/Date.swift:186 (TimeInterval.format)</span>
+    </div>
+    <p>Force-unwraps <code>string(from:)!</code>. Replace with Swift's <code>Duration</code>:</p>
+<pre><code>Duration.seconds(self).formatted(.time(pattern: .minuteSecond))
+// or .hourMinuteSecond when duration >= 3600</code></pre>
+  </article>
+
+  <article class="finding warn">
+    <div class="finding-head">
+      <h3><code>Button(systemImage:role:action:)</code></h3>
+      <span class="file-ref">Views/Button+SystemImage.swift</span>
+    </div>
+    <p>Apple shipped <code>Button("Title", systemImage: "star", action:)</code> in iOS 17 / macOS 14 — your minimum.</p>
+    <p class="fix">Delete the file; update call sites to the system initializer.</p>
+  </article>
+
+  <article class="finding warn">
+    <div class="finding-head">
+      <h3>Deprecated <code>onChange(of:perform:)</code></h3>
+      <span class="file-ref">Views/ActionToggle.swift:28</span>
+    </div>
+    <p>Single-arg <code>onChange</code> is deprecated on your floor (macOS 14 / iOS 17). The entire <code>ActionToggle</code> exists to attach an <code>.onChange</code> to a <code>Toggle</code> — that's one modifier at the call site.</p>
+    <p class="fix">Migrate to the zero-or-two-arg form, or delete the wrapper.</p>
+  </article>
+
+  <article class="finding warn">
+    <div class="finding-head">
+      <h3><code>InfiniteWidth</code> / <code>InfiniteHeight</code> view modifiers</h3>
+      <span class="file-ref">Extensions/InfiniteHeightWidth.swift</span>
+    </div>
+    <p>Two <code>ViewModifier</code> types plus method overloads to save typing <code>.frame(maxWidth: .infinity, alignment:)</code>.</p>
+    <p class="fix">If kept, collapse to one-line <code>View</code> methods. Otherwise delete.</p>
+  </article>
+
+  <article class="finding warn">
+    <div class="finding-head">
+      <h3><code>LeadingVStack</code> is a renamed <code>VStack</code></h3>
+      <span class="file-ref">Views/LeadingVStack.swift</span>
+    </div>
+    <p>Call site length is identical to <code>VStack(alignment: .leading)</code>.</p>
+    <p class="fix">Delete.</p>
+  </article>
+
+  <article class="finding warn">
+    <div class="finding-head">
+      <h3><code>Text.appending(_:withSpace:)</code></h3>
+      <span class="file-ref">Extensions/SwiftUIText+Appending.swift</span>
+    </div>
+    <p><code>Text</code> already supports <code>+</code> concatenation. The wrapper saves no characters.</p>
+    <p class="fix">Delete.</p>
+  </article>
+
+  <article class="finding warn">
+    <div class="finding-head">
+      <h3><code>SheetDismissButton</code> uses deprecated <code>presentationMode</code></h3>
+      <span class="file-ref">Views/SheetDismissButton.swift:13, 28</span>
+    </div>
+    <p>Mixes <code>@Environment(\.presentationMode)</code> (deprecated since iOS 15) and <code>@Environment(\.dismiss)</code>. Also <code>dismiss.callAsFunction()</code> can be just <code>dismiss()</code>.</p>
+  </article>
+
+  <article class="finding warn">
+    <div class="finding-head">
+      <h3><code>ControlSize</code> table predates native modifiers</h3>
+      <span class="file-ref">Extensions/ControlSize.swift</span>
+    </div>
+    <p>Hand-curated heights, paddings, shapes and fonts per <code>ControlSize</code>. SwiftUI's <code>.controlSize(.extraLarge)</code> and <code>.buttonBorderShape(...)</code> now cover most cases at your deployment target.</p>
+    <p class="fix">Reconsider whether this table still earns its keep.</p>
+  </article>
+
+  <article class="finding warn">
+    <div class="finding-head">
+      <h3><code>TintColor</code> environment value</h3>
+      <span class="file-ref">Views/Environment/TintColor.swift</span>
+    </div>
+    <p>Rationale ("<code>.tint</code> has no environment value") is no longer true — SwiftUI exposes the active tint as a <code>ShapeStyle</code>.</p>
+    <p class="fix">Re-evaluate whether the duplicate environment value is still needed.</p>
+  </article>
+
+  <article class="finding warn">
+    <div class="finding-head">
+      <h3><code>Optional&lt;Double&gt;.isEmpty</code> treats 0 as missing</h3>
+      <span class="file-ref">Extensions/Optional.swift</span>
+    </div>
+    <p>Returning <code>true</code> for <code>0.0</code> is a domain assumption that will bite HealthKit-style code where 0 steps is a valid measurement.</p>
+    <p class="fix">Inline at call sites or rename to <code>isMissingOrZero</code>.</p>
+  </article>
+
+  <article class="finding warn">
+    <div class="finding-head">
+      <h3>Three overlapping <code>Double</code> formatters</h3>
+      <span class="file-ref">Extensions/Double.swift</span>
+    </div>
+    <p><code>removeTrailingZeroes</code>, <code>removeZerosFromEnd</code>, <code>trimmed</code>, and <code>formattedDecimalString(places:)</code> all do near-identical work.</p>
+<pre><code>self.formatted(.number.precision(.fractionLength(0...places)))</code></pre>
+    <p class="fix">Pick one, delete the rest.</p>
+  </article>
+
+  <article class="finding warn">
+    <div class="finding-head">
+      <h3><code>Color(hex:)</code> silently fails</h3>
+      <span class="file-ref">Colors/Color+HEX.swift</span>
+    </div>
+    <p>Malformed hex produces a near-transparent black instead of an error.</p>
+    <p class="fix">Make the initializer failable.</p>
+  </article>
+</section>
+
+<!-- ===================== REDUNDANT ===================== -->
+<section id="redundant">
+  <h2 class="section">Redundant within the package <span class="badge info">Consolidate</span></h2>
+  <p class="section-lede">Internal duplication — overlapping helpers, multiple <code>extension Date</code> blocks declaring the same concerns, and the <code>watchOS Colors</code> warning storm.</p>
+
+  <article class="finding info">
+    <div class="finding-head">
+      <h3>Custom <code>Date - Date</code> operator</h3>
+      <span class="file-ref">Extensions/Date.swift:174–178</span>
+    </div>
+    <p>Foundation already provides <code>timeIntervalSince(_:)</code>. Adding <code>-</code> as a custom operator on a Foundation type leaks into every client.</p>
+  </article>
+
+  <article class="finding info">
+    <div class="finding-head">
+      <h3>PhotoCal calendar-grid leftovers</h3>
+      <span class="file-ref">Extensions/Date.swift:206–235</span>
+    </div>
+    <p><code>indexOfToday</code>, <code>countOfItems</code>, <code>prefix</code>, <code>items</code> — public API with no clue what they index outside the original app.</p>
+    <p class="fix">Move into a <code>MonthGrid</code> namespace or remove.</p>
+  </article>
+
+  <article class="finding info">
+    <div class="finding-head">
+      <h3>Three overlapping <code>Date</code> extension blocks</h3>
+      <span class="file-ref">Extensions/Date.swift:238–432</span>
+    </div>
+    <p>Three separate <code>public extension Date</code> blocks redeclare <code>var calendar</code>, expose silent-failing <code>day</code> / <code>hourInt</code> setters, and reintroduce <code>static var today</code> (just <code>Date.now</code> with worse semantics).</p>
+    <p class="fix">Consolidate; prefer throwing mutators over silent no-ops.</p>
+  </article>
+
+  <article class="finding info">
+    <div class="finding-head">
+      <h3>Eighty-five redundant <code>public</code> modifiers</h3>
+      <span class="file-ref">Colors/watchOS Colors.swift:102–186</span>
+    </div>
+    <p>Every static property is <code>public</code> inside a <code>public extension</code>. Compiler warns on each one.</p>
+    <p class="fix">Strip the inner <code>public</code>s.</p>
+  </article>
+
+  <article class="finding info">
+    <div class="finding-head">
+      <h3>Dead helper in <code>AsyncButton</code></h3>
+      <span class="file-ref">Views/AsyncButton.swift:38–46</span>
+    </div>
+    <p><code>buttonLabel()</code> is defined but unused — <code>body</code> inlines the same switch.</p>
+  </article>
+
+  <article class="finding info">
+    <div class="finding-head">
+      <h3><code>AsyncButton.loadingIndicatorStyle</code> resets prior modifiers</h3>
+      <span class="file-ref">Views/AsyncButton.swift:113</span>
+    </div>
+    <p>Returns a brand-new <code>AsyncButton</code>, discarding any modifiers already applied. Works in the preview only because none come before it.</p>
+  </article>
+
+  <article class="finding info">
+    <div class="finding-head">
+      <h3><code>Color.hyper</code> vs <code>LabeledColor.gemstones</code> naming</h3>
+      <span class="file-ref">Colors/Color+HyperColor.swift</span>
+    </div>
+    <p>Lowercase enum <code>hyper</code> (lint warning) and inconsistent capitalization with the gemstone palette.</p>
+    <p class="fix">Pick one casing convention.</p>
+  </article>
+
+  <article class="finding info">
+    <div class="finding-head">
+      <h3><code>Color.with(r:g:b:a:)</code> duplicates the built-in init</h3>
+      <span class="file-ref">Extensions/Color.swift:114</span>
+    </div>
+    <p>Only ergonomic gain is dividing by 255.</p>
+    <p class="fix">Single initializer: <code>Color(red8: 13, green8: 198, blue8: 255)</code>.</p>
+  </article>
+
+  <article class="finding info">
+    <div class="finding-head">
+      <h3><code>Squircle</code> shape</h3>
+      <span class="file-ref">Extensions/Squircle.swift</span>
+    </div>
+    <p>Path equals <code>RoundedRectangle(cornerSize:, style: .continuous)</code> with corner scaling. Could be a function returning a <code>RoundedRectangle</code>. On iOS 18+, <code>ConcentricRectangle</code> is the actual squircle.</p>
+  </article>
+
+  <article class="finding info">
+    <div class="finding-head">
+      <h3><code>.allTime</code> lower bound</h3>
+      <span class="file-ref">Timeframe/Timeframe.swift:36</span>
+    </div>
+    <p><code>Date(timeIntervalSince1970: 0)</code> is fine but <code>Date.distantPast</code> is the conventional spelling.</p>
+  </article>
+
+  <article class="finding info">
+    <div class="finding-head">
+      <h3>Empty file</h3>
+      <span class="file-ref">Colors/Color+DisplayName.swift</span>
+    </div>
+    <p>Two <code>import</code> statements, nothing else.</p>
+    <p class="fix">Delete.</p>
+  </article>
+
+  <article class="finding info">
+    <div class="finding-head">
+      <h3>Misleading <code>// MARK:</code> headers</h3>
+      <span class="file-ref">Extensions/Date.swift:145</span>
+    </div>
+    <p><code>// MARK: Ints &amp; Doubles</code> precedes a <code>Calendar</code> extension.</p>
+  </article>
+</section>
+
+<!-- ===================== MINOR ===================== -->
+<section id="minor">
+  <h2 class="section">Minor &amp; style <span class="badge good">Polish</span></h2>
+
+  <article class="finding good">
+    <div class="finding-head">
+      <h3><code>NSRegularExpression</code> in hashtag extraction</h3>
+      <span class="file-ref">Extensions/String.swift:62</span>
+    </div>
+    <p>On your platform floors, <code>Regex</code> literals (<code>#/#[a-z0-9]+/#</code>) are available and inferable.</p>
+  </article>
+
+  <article class="finding good">
+    <div class="finding-head">
+      <h3><code>Ring</code> no-op gradient</h3>
+      <span class="file-ref">Views/Ring.swift:54</span>
+    </div>
+    <p>Single-stop <code>AngularGradient</code> when <code>progress &lt; transitionPoint</code> could be a plain <code>Color</code>.</p>
+  </article>
+
+  <article class="finding good">
+    <div class="finding-head">
+      <h3>Commented-out parameters in <code>OpenGauge</code></h3>
+      <span class="file-ref">Views/OpenGauge.swift</span>
+    </div>
+    <p>Stale <code>trackColor</code> / <code>fillColor</code> placeholders clutter the public surface.</p>
+    <p class="fix">Restore or delete.</p>
+  </article>
+
+  <article class="finding good">
+    <div class="finding-head">
+      <h3>Checked-in <code>.DS_Store</code></h3>
+      <span class="file-ref">Tests/.DS_Store</span>
+    </div>
+    <p>Add to <code>.gitignore</code>.</p>
+  </article>
+</section>
+
+<!-- ===================== QUICK WINS ===================== -->
+<section id="quickwins">
+  <div class="quickwins">
+    <h2 class="section">Quick-win cleanup order</h2>
+    <p class="section-lede">If you only have an hour, this sequence eliminates the loudest warnings and the highest-risk bugs first.</p>
+    <ol>
+      <li>Delete <code>import Backpack</code> from <code>NotificationContent.swift</code>.</li>
+      <li>Fix the missing <code>.minute</code> in <code>NotificationTrigger</code>'s <code>dateComponents</code> call.</li>
+      <li>Rename or remove <code>Image.init(_ name: String)</code> — currently silently breaks asset lookups.</li>
+      <li>Strip the redundant inner <code>public</code> in <code>watchOS Colors.swift</code> (silences ~85 warnings).</li>
+      <li>Wrap or delete the <code>Date: RawRepresentable</code> conformance.</li>
+      <li>Replace <code>endOfDay</code> / <code>endOfWeek</code> family with <code>Calendar.dateInterval(of:for:)</code>.</li>
+    </ol>
+  </div>
+</section>
+
+<footer>
+  <span>Backpack code review</span>
+  <span>Reviewed 2026-06-09</span>
+</footer>
+
+</main>
+</body>
+</html>
