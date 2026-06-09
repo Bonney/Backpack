@@ -10,8 +10,12 @@ struct TextFieldClearButton: ViewModifier {
     func body(content: Content) -> some View {
         content
             .overlay(alignment: .trailing) {
-                Button(systemImage: "xmark.circle.fill", action: action)
-                    .tint(.secondary)
+                Button {
+                    action()
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                }
+                .tint(.secondary)
             }
     }
 }
