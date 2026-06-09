@@ -384,15 +384,13 @@ public extension Date {
     }
 
     var startOfWeek: Date? {
-        let gregorian = Calendar(identifier: .gregorian)
-        guard let sunday = gregorian.date(from: gregorian.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)) else { return nil }
-        return gregorian.date(byAdding: .day, value: 1, to: sunday)?.startOfDay
+        guard let sunday = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)) else { return nil }
+        return Calendar.current.date(byAdding: .day, value: 1, to: sunday)?.startOfDay
     }
 
     var endOfWeek: Date? {
-        let gregorian = Calendar(identifier: .gregorian)
-        guard let sunday = gregorian.date(from: gregorian.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)) else { return nil }
-        return gregorian.date(byAdding: .day, value: 7, to: sunday)?.endOfDay
+        guard let sunday = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self)) else { return nil }
+        return Calendar.current.date(byAdding: .day, value: 7, to: sunday)?.endOfDay
     }
 
     var startOfMonth: Date? {
