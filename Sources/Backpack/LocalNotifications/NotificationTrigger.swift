@@ -37,7 +37,10 @@ extension NotificationTrigger {
         switch self {
             case .date(let date, let repeats):
                 NotificationTrigger.logger.info("Creating UNCalendarNotificationTrigger for Date: \(date.formatted()), Repeating: \(repeats).")
-                let components = Calendar.current.dateComponents([.second, .month, .hour, .day, .month, .year], from: date)
+                let components = Calendar.current.dateComponents(
+                    [.year, .month, .day, .hour, .minute, .second],
+                    from: date
+                )
                 return UNCalendarNotificationTrigger(dateMatching: components, repeats: repeats)
 
             case .time(let timeInterval, let repeats):
