@@ -1,5 +1,4 @@
 import SwiftUI
-import Backpack
 
 struct HueGradient: ShapeStyle, Sendable {
 
