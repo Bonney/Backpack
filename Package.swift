@@ -11,15 +11,24 @@ let package = Package(
         .watchOS(.v10),
     ],
     products: [
-        .library(name: "Backpack", targets: ["Backpack"])
+        .library(name: "Backpack", targets: ["Backpack"]),
+        .library(name: "OklchColorPicker", targets: ["OklchColorPicker"]),
     ],
     dependencies: [
+        .package(url: "https://github.com/HarshilShah/ChromaKit", branch: "main"),
     ],
     targets: [
         .target(
             name: "Backpack",
             dependencies: [],
             resources: [.process("Colors/Colors.xcassets")]
+        ),
+        .target(
+            name: "OklchColorPicker",
+            dependencies: [
+                "Backpack",
+                .product(name: "ChromaKit", package: "ChromaKit"),
+            ]
         ),
         .testTarget(
             name: "BackpackTests",
