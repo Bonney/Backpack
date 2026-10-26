@@ -19,8 +19,7 @@ let package = Package(
         .target(
             name: "Backpack",
             dependencies: [],
-            exclude: ["ChromaKit/LICENSE"],
-            resources: [.process("Colors/Colors.xcassets")]
+            exclude: ["ChromaKit/LICENSE"]
         ),
         .testTarget(
             name: "BackpackTests",
