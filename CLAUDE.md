@@ -4,14 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Backpack is a personal Swift Package — a library of SwiftUI views, extensions, color assets, and small utilities the author reuses across projects. Single library product (`Backpack`), no external dependencies.
+Backpack is a personal Swift Package — a library of SwiftUI views, extensions, color assets, and small utilities the author reuses across projects. Two library products: `Backpack` (no external dependencies) and `OklchColorPicker` (depends on `Backpack` and [ChromaKit](https://github.com/HarshilShah/ChromaKit)). Keep the `Backpack` target dependency-free; anything that needs a third-party package goes in a separate target.
 
 Platforms: iOS 17+, macOS 14+, watchOS 10+. Swift tools 5.9.
 
 ## Commands
 
 ```bash
-# Build
+# Build (needs full Xcode for actool, not CommandLineTools)
 swift build
 
 # Run all tests
@@ -35,6 +35,8 @@ Everything lives under `Sources/Backpack/`, organized by topic rather than by Sw
 - **`Views/`** — Reusable SwiftUI views (`AsyncButton`, `Ring`, `OpenGauge`, `BottomButton`, `EllipsisMenu`, `ClearButtonTextField`, etc.), plus subdirectories: `ButtonStyles/` (Aqua, Smooth, Compressible, Outlined), `ViewModifiers/` (`DragToDismiss`, `AppearanceDelay`, `SFSymbolAlignment`, etc.), `Environment/` (custom environment values like `TintColor`, `UIScreen+CornerRadius`), `VariableBlur/` (Metal-backed blur).
 - **`FormatStyles/`** — Custom `FormatStyle` implementations (e.g. `RelativeDateStyle`).
 - **`Previews/`** — `PreviewList` helper for organizing SwiftUI previews.
+
+`Sources/OklchColorPicker/` is a separate target, merged in from the former standalone OklchColorPicker repo. It holds `OKLCHColorPicker` (hue/luminance/chroma sliders, filtered by the `OKLCHColorPickerComponent` option set), `ColorComponents` (an OKLCH value that is also a `ShapeStyle`), `CustomSlider`, and gradient `ShapeStyle`s under `Backgrounds/`. Colors are built with ChromaKit's `Color.oklch(_:_:_:)`.
 
 ### Cross-platform conventions
 
