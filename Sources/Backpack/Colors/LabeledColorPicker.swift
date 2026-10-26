@@ -5,6 +5,13 @@ public enum LabeledColorPickerStyle: Int, Equatable {
     case square = 1
 }
 
+private extension LabeledColor {
+    /// Hue in degrees. Prefers the OKLCH hue, which follows perceived hue more closely than HSB.
+    var sortingHue: Double {
+        components?.hue ?? Double(color.hue) * 360
+    }
+}
+
 private struct LabeledColorPickerDetail: View {
     private enum SortingOption: Int, Equatable, CaseIterable, Identifiable {
         case defaultSort = 0
@@ -54,7 +61,7 @@ private struct LabeledColorPickerDetail: View {
             case .defaultSort:
                 return filtered
             case .sortByHue:
-                return filtered.sorted { $0.color.hue > $1.color.hue }
+                return filtered.sorted { $0.sortingHue > $1.sortingHue }
         }
     }
 
@@ -157,6 +164,33 @@ public struct LabeledColorPicker: View {
         self.colorOptions = options
     }
 
+    /// Picks a `ColorComponents` value from `options`.
+    ///
+    /// Options without OKLCH components (such as system colors) can't be represented and are left out.
+    /// A selection that matches none of the options is shown as "Custom".
+    public init(
+        selection: Binding<ColorComponents>,
+        style: LabeledColorPickerStyle,
+        options: [LabeledColor]
+    ) {
+        let options = options.filter { $0.components != nil }
+        self.init(
+            selected: Binding(
+                get: {
+                    options.first { $0.components == selection.wrappedValue }
+                        ?? LabeledColor("Custom", components: selection.wrappedValue)
+                },
+                set: { newValue in
+                    if let components = newValue.components {
+                        selection.wrappedValue = components
+                    }
+                }
+            ),
+            style: style,
+            options: options
+        )
+    }
+
     public var body: some View {
         Button {
             print("toggling")
@@ -197,9 +231,23 @@ private struct LabeledColorPicker_Demo: View {
     }
 }
 
+private struct LabeledColorPicker_ComponentsDemo: View {
+    @State private var selection: ColorComponents = .malachite
+
+    var body: some View {
+        Form {
+            LabeledColorPicker(selection: $selection, style: .rounded, options: LabeledColorSet.allColorSets)
+            Rectangle()
+                .fill(selection)
+                .frame(height: 44)
+        }
+    }
+}
+
 struct LabeledColorPicker_Previews: PreviewProvider {
     static var previews: some View {
         LabeledColorPickerDetail(colorOptions: LabeledColorSet.allColorSets, style: .rounded, onSelection: { _ in })
         LabeledColorPicker_Demo()
+        LabeledColorPicker_ComponentsDemo()
     }
 }
