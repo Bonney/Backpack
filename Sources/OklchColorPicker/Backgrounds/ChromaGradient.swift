@@ -1,5 +1,5 @@
 import SwiftUI
-import ChromaKit
+import Backpack
 
 struct ChromaGradient: ShapeStyle, Sendable {
     let luminance: Double

@@ -15,20 +15,17 @@ let package = Package(
         .library(name: "OklchColorPicker", targets: ["OklchColorPicker"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/HarshilShah/ChromaKit", branch: "main"),
     ],
     targets: [
         .target(
             name: "Backpack",
             dependencies: [],
+            exclude: ["ChromaKit/LICENSE"],
             resources: [.process("Colors/Colors.xcassets")]
         ),
         .target(
             name: "OklchColorPicker",
-            dependencies: [
-                "Backpack",
-                .product(name: "ChromaKit", package: "ChromaKit"),
-            ]
+            dependencies: ["Backpack"]
         ),
         .testTarget(
             name: "BackpackTests",

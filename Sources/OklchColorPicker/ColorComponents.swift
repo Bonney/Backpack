@@ -1,6 +1,5 @@
 import SwiftUI
 import Backpack
-import ChromaKit
 
 /// A structure representing color components in the OKLCH color space.
 public struct ColorComponents: ShapeStyle, Hashable, Codable, Sendable, Equatable {
