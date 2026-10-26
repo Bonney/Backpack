@@ -12,11 +12,15 @@ import SwiftUI
 /// - Parameters:
 ///     - name: the display name for the color
 ///     - color: a SwiftUI Color
+///     - components: the OKLCH components behind `color`, when it was built from them
 ///
 public struct LabeledColor: Identifiable, Hashable {
     public let id: UUID
     public let name: String
     public let color: Color
+    /// The OKLCH components `color` was built from, or `nil` for colors with no fixed value
+    /// (system colors such as `Color.blue` or `Color.primary` adapt to appearance and platform).
+    public let components: ColorComponents?
 
     /// A SwiftUI Label, where the Title is this LabeledColor's Name,
     /// and the Icon is a circle in this LabeledColor's Color.
@@ -34,6 +38,14 @@ public struct LabeledColor: Identifiable, Hashable {
         self.id = UUID()
         self.name = name
         self.color = color
+        self.components = nil
+    }
+
+    public init(_ name: String, components: ColorComponents) {
+        self.id = UUID()
+        self.name = name
+        self.color = components.swiftUIColor
+        self.components = components
     }
 }
 

@@ -33,15 +33,15 @@ public extension Color {
 }
 
 public extension LabeledColor {
-    static let sapphire = LabeledColor("Sapphire", color: .sapphire)
-    static let turquoise = LabeledColor("Turquoise", color: .turquoise)
-    static let malachite = LabeledColor("Malachite", color: .malachite)
-    static let emerald = LabeledColor("Emerald", color: .emerald)
-    static let citrine = LabeledColor("Citrine", color: .citrine)
-    static let topaz = LabeledColor("Topaz", color: .topaz)
-    static let ruby = LabeledColor("Ruby", color: .ruby)
-    static let amethyst = LabeledColor("Amethyst", color: .amethyst)
-    static let lapis = LabeledColor("Lapis", color: .lapis)
+    static let sapphire = LabeledColor("Sapphire", components: .sapphire)
+    static let turquoise = LabeledColor("Turquoise", components: .turquoise)
+    static let malachite = LabeledColor("Malachite", components: .malachite)
+    static let emerald = LabeledColor("Emerald", components: .emerald)
+    static let citrine = LabeledColor("Citrine", components: .citrine)
+    static let topaz = LabeledColor("Topaz", components: .topaz)
+    static let ruby = LabeledColor("Ruby", components: .ruby)
+    static let amethyst = LabeledColor("Amethyst", components: .amethyst)
+    static let lapis = LabeledColor("Lapis", components: .lapis)
 
     static var gemstones: [LabeledColor] {
         [LabeledColor.sapphire, .turquoise, .malachite, .emerald, .citrine, .topaz, .ruby, .amethyst, .lapis]

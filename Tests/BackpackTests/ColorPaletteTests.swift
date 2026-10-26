@@ -59,4 +59,12 @@ final class ColorPaletteTests: XCTestCase {
         XCTAssertEqual(ColorComponents.hyper.red, ColorComponents(luminance: 0.6601, chroma: 0.2683, hue: 31.52))
         XCTAssertEqual(Color.hyperColors.count, 10)
     }
+
+    func testLabeledColorComponents() {
+        XCTAssertEqual(LabeledColor.ruby.components, .ruby)
+        XCTAssertEqual(LabeledColor.watchOS_voltNike.components, ColorComponents.watchOS.nike.volt)
+        XCTAssertNil(LabeledColor.systemBlue.components)
+        XCTAssertTrue(LabeledColor.gemstones.allSatisfy { $0.components != nil })
+        XCTAssertTrue(LabeledColor.watchOSColors.allSatisfy { $0.components != nil })
+    }
 }
