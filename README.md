@@ -13,7 +13,7 @@
 Take it, use it, contribute if you want!
 ## OklchColorPicker
 
-The package also ships a second library product, `OklchColorPicker`: a SwiftUI color picker built on the perceptually uniform OKLCH color space. It depends on [ChromaKit](https://github.com/HarshilShah/ChromaKit), so it lives in its own product and `Backpack` itself stays dependency-free.
+The package also ships a second library product, `OklchColorPicker`: a SwiftUI color picker built on the perceptually uniform OKLCH color space. Its OKLCH color math comes from [ChromaKit](https://github.com/HarshilShah/ChromaKit) by Harshil Shah (MIT), which is vendored into `Backpack` under `Sources/Backpack/ChromaKit`. The package has no external dependencies.
 
 ```swift
 .product(name: "OklchColorPicker", package: "Backpack")

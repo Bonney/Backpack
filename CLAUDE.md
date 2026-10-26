@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Backpack is a personal Swift Package — a library of SwiftUI views, extensions, color assets, and small utilities the author reuses across projects. Two library products: `Backpack` (no external dependencies) and `OklchColorPicker` (depends on `Backpack` and [ChromaKit](https://github.com/HarshilShah/ChromaKit)). Keep the `Backpack` target dependency-free; anything that needs a third-party package goes in a separate target.
+Backpack is a personal Swift Package — a library of SwiftUI views, extensions, color assets, and small utilities the author reuses across projects. Two library products: `Backpack` and `OklchColorPicker` (which depends on `Backpack`). The package has no external dependencies. Keep it that way: vendor small third-party code (with its license) instead of adding a package dependency.
 
 Platforms: iOS 17+, macOS 14+, watchOS 10+. Swift tools 5.9.
 
@@ -35,8 +35,9 @@ Everything lives under `Sources/Backpack/`, organized by topic rather than by Sw
 - **`Views/`** — Reusable SwiftUI views (`AsyncButton`, `Ring`, `OpenGauge`, `BottomButton`, `EllipsisMenu`, `ClearButtonTextField`, etc.), plus subdirectories: `ButtonStyles/` (Aqua, Smooth, Compressible, Outlined), `ViewModifiers/` (`DragToDismiss`, `AppearanceDelay`, `SFSymbolAlignment`, etc.), `Environment/` (custom environment values like `TintColor`, `UIScreen+CornerRadius`), `VariableBlur/` (Metal-backed blur).
 - **`FormatStyles/`** — Custom `FormatStyle` implementations (e.g. `RelativeDateStyle`).
 - **`Previews/`** — `PreviewList` helper for organizing SwiftUI previews.
+- **`ChromaKit/`** — Vendored copy of [ChromaKit](https://github.com/HarshilShah/ChromaKit) (MIT, `LICENSE` kept alongside and excluded in `Package.swift`), taken from upstream commit `3bcedb6`. Provides `Color/UIColor/NSColor.oklch/oklab/lch/lab(...)` and the `Oklch`, `Oklab`, `Lch`, `Lab`, `XYZ`, `P3` value types. The one local change: upstream's `ColorComponents` SIMD typealias is renamed `ChromaComponents` so it doesn't collide with OklchColorPicker's `ColorComponents` struct. Keep upstream's formatting (tabs) so future syncs diff cleanly.
 
-`Sources/OklchColorPicker/` is a separate target, merged in from the former standalone OklchColorPicker repo. It holds `OKLCHColorPicker` (hue/luminance/chroma sliders, filtered by the `OKLCHColorPickerComponent` option set), `ColorComponents` (an OKLCH value that is also a `ShapeStyle`), `CustomSlider`, and gradient `ShapeStyle`s under `Backgrounds/`. Colors are built with ChromaKit's `Color.oklch(_:_:_:)`.
+`Sources/OklchColorPicker/` is a separate target, merged in from the former standalone OklchColorPicker repo. It holds `OKLCHColorPicker` (hue/luminance/chroma sliders, filtered by the `OKLCHColorPickerComponent` option set), `ColorComponents` (an OKLCH value that is also a `ShapeStyle`), `CustomSlider`, and gradient `ShapeStyle`s under `Backgrounds/`. Colors are built with the vendored `Color.oklch(_:_:_:)` from `Backpack/ChromaKit/`.
 
 ### Cross-platform conventions
 
@@ -50,4 +51,4 @@ Date math defaults to `Calendar.current` (see `Extensions/Date.swift`, `Extensio
 
 ## Tests
 
-XCTest-based, located in `Tests/BackpackTests/`. Each topic area has a corresponding test file (`TimeframeTests`, `DateTests`, `DateComparisonTests`, `StringTests`, `DoubleTests`, `NotificationTests`). Tests use `@testable import Backpack` and rely on the date convenience initializers from the Date extension (e.g. `Date(year: 2024, month: 6, day: 15)`).
+XCTest-based, located in `Tests/BackpackTests/`. Each topic area has a corresponding test file (`TimeframeTests`, `DateTests`, `DateComparisonTests`, `StringTests`, `DoubleTests`, `NotificationTests`, plus `ChromaKitTests` carried over from upstream). Tests use `@testable import Backpack` and rely on the date convenience initializers from the Date extension (e.g. `Date(year: 2024, month: 6, day: 15)`).
